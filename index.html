@@ -103,9 +103,10 @@
         .bet-buttons { display: flex; justify-content: center; align-items: center; gap: clamp(5px, 2vw, 10px); flex-wrap: wrap; }
         #help-modal, #secret-modal, #comment-modal, #history-modal, #premium-info-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; max-width: 90%; width: 500px; max-height: 85vh; overflow-y: auto; }
         #help-modal button, #secret-modal button, #comment-modal button, #history-modal button:not(.history-buttons button), #premium-info-modal button { margin-top: 15px; }
-        #comment-modal { height: auto; min-height: 380px; }
+        /* --- MODIF: Ajuster la hauteur min si nécessaire pour les 11 options --- */
+        #comment-modal { height: auto; min-height: 480px; /* Augmenté pour plus d'espace */ }
         .comment-section { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        #comment-input { width: calc(100% - 10px); height: 100px; resize: vertical; padding: 5px; margin-bottom: 5px; border: 1px solid #ccc;}
+        #comment-input { width: calc(100% - 10px); height: 80px; /* Légèrement réduit pour compenser la hauteur des checkboxes */ resize: vertical; padding: 5px; margin-bottom: 5px; border: 1px solid #ccc;}
         .checkbox-section { margin-top: 5px; }
         .checkbox-section label { display: flex; align-items: center; margin-bottom: 6px; cursor: pointer;}
         .checkbox-section input[type="checkbox"] { margin-right: 8px;}
@@ -201,7 +202,7 @@
         </div>
     </div>
 
-    <!-- Modals (structure identique) -->
+    <!-- Modals (structure identique, sauf #comment-modal) -->
      <div id="help-modal">
         <h2 id="help-title"></h2>
         <div id="help-text"></div>
@@ -212,15 +213,23 @@
         <ul id="secret-tips"></ul>
         <button onclick="closeModal('secret-modal')" class="button-close" id="secret-modal-close"></button>
     </div>
+    <!-- MODIFICATION: #comment-modal structure des checkboxes -->
     <div id="comment-modal">
         <h3 id="comment-title"></h3>
         <div class="comment-section">
             <textarea id="comment-input" placeholder=""></textarea>
              <div class="checkbox-section">
-                <label><input type="checkbox" name="comment-option" value="GoodMove"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="BadMove"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="Risky"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="Safe"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="NoSeedsBC"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="OffensiveCapture"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="BuildKrouOffensive"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="BuildKrouDefensive"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="BlockCounterKrou"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="Build2Krous"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="CaptureLimit3"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="CaptureMax5"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="Accelerate"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="SlowDown"> <span class="checkbox-label-text"></span></label>
+                <label><input type="checkbox" name="comment-option" value="TechErrorSelect"> <span class="checkbox-label-text"></span></label>
             </div>
         </div>
         <div style="text-align: center; margin-top: 20px;">
@@ -228,6 +237,7 @@
             <button class="button-close" onclick="closeModal('comment-modal')" id="comment-cancel-btn"></button>
         </div>
     </div>
+    <!-- FIN MODIFICATION #comment-modal -->
     <div id="history-modal">
         <h3 id="history-title"></h3>
         <div id="history-content"></div>
@@ -298,7 +308,7 @@
         const playerHoleCodes = ['A', 'B', 'C', 'D', 'E', 'F'];
         let isGameOver = { confettiShown: false };
 
-        // --- Objet Translations (COMPLET) ---
+        // --- Objet Translations (MODIFIÉ pour les nouvelles options de commentaire) ---
         const translations = {
              fr: {
                  pageTitle: "Dans la Tête d'un Champion",
@@ -359,15 +369,24 @@
                  helpTitle: "Aide & Objectif",
                  helpTextStandard: `<strong>Bienvenue dans l'entraînement cérébral Awalé !</strong><br><br>Votre objectif est de <strong>penser comme un champion</strong> en devinant le coup qu'il a joué dans une partie réelle à chaque fois que c'est votre tour (Joueur 😊 ↓).<br><br><strong>Comment jouer :</strong><br>1. Choisissez une langue et l'une des 3 premières parties disponibles.<br>2. Quand c'est votre tour (😊 ↓), observez le plateau.<br>3. Cliquez sur une de vos cases (A-F) contenant des graines pour la sélectionner.<br>4. Choisissez le pourcentage de votre cagnotte virtuelle à miser sur ce choix.<br>5. Cliquez sur 'Je parie !'. Si votre choix est correct, vous gagnez votre mise. Sinon, vous la perdez.<br>6. Quand c'est le tour de l'adversaire (😔 ↑), cliquez sur 'Suivant'.<br><br><strong>Passez à la Version Premium !</strong><br>Pour une expérience complète et soutenir notre association, adhérez à <a href="https://jeuxnomadesfrance.jimdofree.com/" target="_blank" rel="noopener noreferrer">Jeux Nomades France</a>. La version Premium débloque les fonctionnalités suivantes :<ul><li>L'accès à <strong>toutes les parties</strong> d'entraînement.</li><li>Les boutons <strong>"Histo"</strong> (historique) et <strong>"Enr"</strong> (prise de notes).</li><li>L'activation des <strong>aides visuelles</strong> (indications de capture/pression).</li><li>L'activation de la <strong>croix rouge</strong> d'alignement.</li><li>L'accès aux <strong>astuces secrètes</strong>.</li></ul>`,
                  helpTextPremium: `<strong>Bienvenue dans la version Premium !</strong><br><br>Vous avez accès à toutes les fonctionnalités pour vous entraîner à penser comme un champion.<br><br><strong>Fonctionnalités Premium :</strong><br><ul><li><strong>Toutes les Parties :</strong> Accédez à l'ensemble des parties via le sélecteur.</li><li><strong>Historique ("Histo") :</strong> Consultez vos parties précédentes, statistiques et commentaires.</li><li><strong>Coaching par IA via Export JSON :</strong> Utilisez le bouton "Copier (JSON)" dans l'historique. Collez le texte copié dans une Intelligence Artificielle conversationnelle (comme ChatGPT, Gemini, Mistral, etc.). Le prompt inclus demandera à l'IA d'analyser vos parties (erreurs, commentaires) et de vous donner des conseils de coaching personnalisés, directement dans la langue sélectionnée dans l'application !</li><li><strong>Enregistrement ("Enr") :</strong> Ajoutez des notes stratégiques à chaque coup joué.</li><li><strong>Aides Visuelles :</strong><ul><li>Activation/Désactivation : Appui long (3s) sur le bouton <strong>+</strong> en haut à droite.</li><li>Case adverse orange clignotante : Votre coup sélectionné capture directement.</li><li>Case adverse avec bordure orange : Pression pour capture future possible.</li><li>Votre case avec bordure orange pointillée : Menace de capture par l'adversaire.</li></ul></li><li><strong>Croix Rouge :</strong><ul><li>Activation/Désactivation : Clic simple sur le bouton <strong>+</strong> en haut à droite.</li><li>Aide à visualiser les alignements de cases.</li></ul></li></ul><strong>Astuces Secrètes Activables :</strong><br><ul><li><strong>Logo x3 clics :</strong> Réinitialise la partie en cours.</li><li><strong>Cagnotte x3 clics :</strong> Active/Désactive le mode "Succès Garanti" (tous les paris réussissent).</li><li><strong>Texte "Je mise" x3 clics :</strong> Verrouille/Déverrouille le pourcentage de mise sélectionné.</li><li><strong>Case 'a' adverse (appui 2s) :</strong> Annule le dernier coup joué (retour arrière).</li><li><strong>Cases 'f' + 'a' adverses (appui 3s simultané) :</strong> Affiche la liste des astuces secrètes.</li></ul>`,
-                 secretMessage: "Bonjour Eric",
+                 secretMessage: "Bonjour",
                  secretTipsTitle: "Astuces Secrètes (Premium)",
-                 secretTips: [ "Logo x3 clics : Reset partie", "Cagnotte x3 clics : Succès garanti ON/OFF", "'Je mise' x3 clics : Verrouille/Déverrouille mise (%)", "Case 'f' adverse (appui 2s) : Bonjour Eric", "Case 'a' adverse (appui 2s) : Retour arrière (annule dernier coup)", "Cases 'f' + 'a' adverses (appui 3s simultané) : Montre cette liste" ],
+                 secretTips: [ "Logo x3 clics : Reset partie", "Cagnotte x3 clics : Succès garanti ON/OFF", "'Je mise' x3 clics : Verrouille/Déverrouille mise (%)", "Case 'f' adverse (appui 2s) : Bonjour", "Case 'a' adverse (appui 2s) : Retour arrière (annule dernier coup)", "Cases 'f' + 'a' adverses (appui 3s simultané) : Montre cette liste" ],
                  commentModalTitle: "Ajouter un Commentaire",
                  commentInputPlaceholder: "Votre note stratégique ici...",
-                 commentCheckboxGood: "Bon coup potentiel",
-                 commentCheckboxBad: "Mauvais coup potentiel",
-                 commentCheckboxRisky: "Risqué",
-                 commentCheckboxSafe: "Sécurisé",
+                 // --- NOUVELLES OPTIONS COMMENTAIRE ---
+                 commentOptionNoSeedsBC: "Aucune graines en case B et C",
+                 commentOptionOffensiveCapture: "Etre Offensif (capture) > Défensif (échappé)",
+                 commentOptionBuildKrouOffensive: "Construire Krou Offensif (D/E/F) > Défensif",
+                 commentOptionBuildKrouDefensive: "Construire Krou Défensif (C/D/E) > Offensif",
+                 commentOptionBlockCounterKrou: "Bloquer le Contre-Krou Adverse",
+                 commentOptionBuild2Krous: "Construire 2 Krous en même temps",
+                 commentOptionCaptureLimit3: "Capture multiple limité à 3 cases",
+                 commentOptionCaptureMax5: "Capture multiple max (5 cases)",
+                 commentOptionAccelerate: "Accélérer le jeu",
+                 commentOptionSlowDown: "Ralentir le jeu",
+                 commentOptionTechErrorSelect: "Erreur technique de sélection de case",
+                 // --- FIN NOUVELLES OPTIONS ---
                  historyTitle: "Historique des Parties",
                  historyRecordTitle: (name, date) => `Partie: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Réussite: ${rate}% | Pot final: ${pot}€ | Durée: ${duration}s`,
@@ -451,15 +470,24 @@
                  helpTitle: "Help & Objective",
                  helpTextStandard: `<strong>Welcome to Awale Brain Training!</strong><br><br>Your goal is to <strong>think like a champion</strong> by guessing the move they played in a real game each time it's your turn (Player 😊 ↓).<br><br><strong>How to play:</strong><br>1. Choose a language and one of the first 3 available games.<br>2. When it's your turn (😊 ↓), observe the board.<br>3. Click on one of your holes (A-F) containing seeds to select it.<br>4. Choose the percentage of your virtual pot to bet on this choice.<br>5. Click 'Place Bet!'. If your choice is correct, you win your bet. Otherwise, you lose it.<br>6. When it's the opponent's turn (😔 ↑), click 'Next'.<br><br><strong>Upgrade to Premium!</strong><br>For a complete experience and to support our association, join <a href="https://jeuxnomadesfrance.jimdofree.com/" target="_blank" rel="noopener noreferrer">Jeux Nomades France</a>. The Premium version unlocks the following features:<ul><li>Access to <strong>all training games</strong>.</li><li>The <strong>"Hist"</strong> (history) and <strong>"Rec"</strong> (record notes) buttons.</li><li>Activation of <strong>visual aids</strong> (capture/pressure indicators).</li><li>Activation of the <strong>red alignment cross</strong>.</li><li>Access to <strong>secret tips</strong>.</li></ul>`,
                  helpTextPremium: `<strong>Welcome to the Premium version!</strong><br><br>You have access to all features to train yourself to think like a champion.<br><br><strong>Premium Features:</strong><br><ul><li><strong>All Games:</strong> Access all games via the selector.</li><li><strong>History ("Hist"):</strong> Review your past games, statistics, and comments.</li><li><strong>AI Coaching via JSON Export:</strong> Use the "Copy (JSON)" button in the history. Paste the copied text into a conversational AI (like ChatGPT, Gemini, Mistral, etc.). The included prompt will ask the AI to analyze your games (errors, comments) and give you personalized coaching advice, directly in the language selected in the app!</li><li><strong>Recording ("Rec"):</strong> Add strategic notes to each move played.</li><li><strong>Visual Aids:</strong><ul><li>Activation/Deactivation: Long press (3s) the <strong>+</strong> button at the top right.</li><li>Flashing orange opponent hole: Your selected move captures directly.</li><li>Opponent hole with orange border: Pressure for possible future capture.</li><li>Your hole with dashed orange border: Threat of capture by the opponent.</li></ul></li><li><strong>Red Cross:</strong><ul><li>Activation/Deactivation: Single click the <strong>+</strong> button at the top right.</li><li>Helps visualize hole alignments.</li></ul></li></ul><strong>Activatable Secret Tips:</strong><br><ul><li><strong>Logo x3 clicks:</strong> Resets the current game.</li><li><strong>Pot x3 clicks:</strong> Toggles "Guaranteed Success" mode (all bets win).</li><li><strong>"I bet" text x3 clicks:</strong> Locks/Unlocks the selected bet percentage.</li><li><strong>Opponent 'a' hole (2s press):</strong> Undoes the last move played.</li><li><strong>Opponent 'f' + 'a' holes (3s simultaneous press):</strong> Shows the secret tips list.</li></ul>`,
-                 secretMessage: "Hello Eric",
+                 secretMessage: "Hello",
                  secretTipsTitle: "Secret Tips (Premium)",
-                 secretTips: [ "Logo x3 clicks: Reset game", "Pot x3 clicks: Guaranteed Success ON/OFF", "'I bet' x3 clicks: Lock/Unlock bet (%)", "Opponent 'f' hole (2s press): Hello Eric", "Opponent 'a' hole (2s press): Undo last move", "Opponent 'f' + 'a' holes (3s simultaneous press): Show this list" ],
+                 secretTips: [ "Logo x3 clicks: Reset game", "Pot x3 clicks: Guaranteed Success ON/OFF", "'I bet' x3 clicks: Lock/Unlock bet (%)", "Opponent 'f' hole (2s press): Hello", "Opponent 'a' hole (2s press): Undo last move", "Opponent 'f' + 'a' holes (3s simultaneous press): Show this list" ],
                  commentModalTitle: "Add a Comment",
                  commentInputPlaceholder: "Your strategic note here...",
-                 commentCheckboxGood: "Potential Good Move",
-                 commentCheckboxBad: "Potential Bad Move",
-                 commentCheckboxRisky: "Risky",
-                 commentCheckboxSafe: "Safe",
+                 // --- NEW COMMENT OPTIONS ---
+                 commentOptionNoSeedsBC: "No seeds in holes B and C",
+                 commentOptionOffensiveCapture: "Be Offensive (capture) > Defensive (escape)",
+                 commentOptionBuildKrouOffensive: "Build Offensive Krou (D/E/F) > Defensive",
+                 commentOptionBuildKrouDefensive: "Build Defensive Krou (C/D/E) > Offensive",
+                 commentOptionBlockCounterKrou: "Block Opponent's Counter-Krou",
+                 commentOptionBuild2Krous: "Build 2 Krous Simultaneously",
+                 commentOptionCaptureLimit3: "Multiple Capture Limited to 3 Holes",
+                 commentOptionCaptureMax5: "Max Multiple Capture (5 Holes)",
+                 commentOptionAccelerate: "Speed Up the Game",
+                 commentOptionSlowDown: "Slow Down the Game",
+                 commentOptionTechErrorSelect: "Technical Hole Selection Error",
+                 // --- END NEW OPTIONS ---
                  historyTitle: "Game History",
                  historyRecordTitle: (name, date) => `Game: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Success: ${rate}% | Final Pot: ${pot}€ | Duration: ${duration}s`,
@@ -543,15 +571,24 @@
                  helpTitle: "Ayuda y Objetivo",
                  helpTextStandard: `<strong>¡Bienvenido al entrenamiento cerebral Awalé!</strong><br><br>Tu objetivo es <strong>pensar como un campeón</strong> adivinando la jugada que hizo en una partida real cada vez que sea tu turno (Jugador 😊 ↓).<br><br><strong>Cómo jugar:</strong><br>1. Elige un idioma y una de las 3 primeras partidas disponibles.<br>2. Cuando sea tu turno (😊 ↓), observa el tablero.<br>3. Haz clic en una de tus casillas (A-F) que contenga semillas para seleccionarla.<br>4. Elige el porcentaje de tu pozo virtual a apostar por esta elección.<br>5. Haz clic en '¡Apostar!'. Si tu elección es correcta, ganas tu apuesta. Si no, la pierdes.<br>6. Cuando sea el turno del oponente (😔 ↑), haz clic en 'Siguiente'.<br><br><strong>¡Pásate a la Versión Premium!</strong><br>Para una experiencia completa y apoyar a nuestra asociación, únete a <a href="https://jeuxnomadesfrance.jimdofree.com/" target="_blank" rel="noopener noreferrer">Jeux Nomades France</a>. La versión Premium desbloquea las siguientes funcionalidades:<ul><li>Acceso a <strong>todas las partidas</strong> de entrenamiento.</li><li>Los botones <strong>"Histo"</strong> (historial) y <strong>"Grabar"</strong> (toma de notas).</li><li>Activación de las <strong>ayudas visuales</strong> (indicaciones de captura/presión).</li><li>Activación de la <strong>cruz roja</strong> de alineación.</li><li>Acceso a los <strong>trucos secretos</strong>.</li></ul>`,
                  helpTextPremium: `<strong>¡Bienvenido a la versión Premium!</strong><br><br>Tienes acceso a todas las funcionalidades para entrenarte a pensar como un campeón.<br><br><strong>Funcionalidades Premium:</strong><br><ul><li><strong>Todas las Partidas:</strong> Accede a todas las partidas mediante el selector.</li><li><strong>Historial ("Histo"):</strong> Consulta tus partidas anteriores, estadísticas y comentarios.</li><li><strong>Coaching por IA vía Exportar JSON:</strong> Utiliza el botón "Copiar (JSON)" en el historial. Pega el texto copiado en una Inteligencia Artificial conversacional (como ChatGPT, Gemini, Mistral, etc.). El prompt incluido le pedirá a la IA que analice tus partidas (errores, comentarios) y te dé consejos de coaching personalizados, ¡directamente en el idioma seleccionado en la aplicación!</li><li><strong>Grabación ("Grabar"):</strong> Añade notas estratégicas a cada jugada realizada.</li><li><strong>Ayudas Visuales:</strong><ul><li>Activación/Desactivación: Pulsación larga (3s) en el botón <strong>+</strong> arriba a la derecha.</li><li>Casilla del oponente naranja parpadeante: Tu jugada seleccionada captura directamente.</li><li>Casilla del oponente con borde naranja: Presión para posible captura futura.</li><li>Tu casilla con borde naranja discontinuo: Amenaza de captura por el oponente.</li></ul></li><li><strong>Cruz Roja:</strong><ul><li>Activación/Desactivación: Clic simple en el botón <strong>+</strong> arriba a la derecha.</li><li>Ayuda a visualizar las alineaciones de casillas.</li></ul></li></ul><strong>Trucos Secretos Activables:</strong><br><ul><li><strong>Logo x3 clics:</strong> Reinicia la partida actual.</li><li><strong>Pozo x3 clics:</strong> Activa/Desactiva el modo "Éxito Garantizado" (todas las apuestas ganan).</li><li><strong>Texto "Apuesto" x3 clics:</strong> Bloquea/Desbloquea el porcentaje de apuesta seleccionado.</li><li><strong>Casilla 'a' del oponente (pulsación 2s):</strong> Deshace la última jugada realizada.</li><li><strong>Casillas 'f' + 'a' del oponente (pulsación 3s simultánea):</strong> Muestra la lista de trucos secretos.</li></ul>`,
-                 secretMessage: "Hola Eric",
+                 secretMessage: "Hola",
                  secretTipsTitle: "Trucos Secretos (Premium)",
-                 secretTips: [ "Logo x3 clics: Reset partida", "Pozo x3 clics: Éxito garantizado ON/OFF", "'Apuesto' x3 clics: Bloquear/Desbloquear apuesta (%)", "Casilla 'f' oponente (pulsación 2s): Hola Eric", "Casilla 'a' oponente (pulsación 2s): Deshacer última jugada", "Casillas 'f' + 'a' oponentes (pulsación 3s simultánea): Muestra esta lista" ],
+                 secretTips: [ "Logo x3 clics: Reset partida", "Pozo x3 clics: Éxito garantizado ON/OFF", "'Apuesto' x3 clics: Bloquear/Desbloquear apuesta (%)", "Casilla 'f' oponente (pulsación 2s): Hola", "Casilla 'a' oponente (pulsación 2s): Deshacer última jugada", "Casillas 'f' + 'a' oponentes (pulsación 3s simultánea): Muestra esta lista" ],
                  commentModalTitle: "Añadir un Comentario",
                  commentInputPlaceholder: "Tu nota estratégica aquí...",
-                 commentCheckboxGood: "Posible Buena Jugada",
-                 commentCheckboxBad: "Posible Mala Jugada",
-                 commentCheckboxRisky: "Arriesgado",
-                 commentCheckboxSafe: "Seguro",
+                 // --- NUEVAS OPCIONES COMENTARIO ---
+                 commentOptionNoSeedsBC: "Sin semillas en las casillas B y C",
+                 commentOptionOffensiveCapture: "Ser Ofensivo (captura) > Defensivo (escape)",
+                 commentOptionBuildKrouOffensive: "Construir Krou Ofensivo (D/E/F) > Defensivo",
+                 commentOptionBuildKrouDefensive: "Construir Krou Defensivo (C/D/E) > Ofensivo",
+                 commentOptionBlockCounterKrou: "Bloquear el Contra-Krou Adversario",
+                 commentOptionBuild2Krous: "Construir 2 Krous al mismo tiempo",
+                 commentOptionCaptureLimit3: "Captura múltiple limitada a 3 casillas",
+                 commentOptionCaptureMax5: "Captura múltiple máxima (5 casillas)",
+                 commentOptionAccelerate: "Acelerar el juego",
+                 commentOptionSlowDown: "Ralentizar el juego",
+                 commentOptionTechErrorSelect: "Error técnico de selección de casilla",
+                 // --- FIN NUEVAS OPCIONES ---
                  historyTitle: "Historial de Partidas",
                  historyRecordTitle: (name, date) => `Partida: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Éxito: ${rate}% | Pozo final: ${pot}€ | Duración: ${duration}s`,
@@ -640,10 +677,19 @@
                  secretTips: [ "Логотип x3 клика: Сброс игры", "Банк x3 клика: Гарантированный Успех ВКЛ/ВЫКЛ", "'Ставка' x3 клика: Блокировать/Разблокировать ставку (%)", "Лунка 'f' противника (нажатие 2с): Привет, Эрик", "Лунка 'a' противника (нажатие 2с): Отменить последний ход", "Лунки 'f' + 'a' противника (нажатие 3с одновременно): Показать этот список" ],
                  commentModalTitle: "Добавить Комментарий",
                  commentInputPlaceholder: "Ваша стратегическая заметка здесь...",
-                 commentCheckboxGood: "Возможный Хороший Ход",
-                 commentCheckboxBad: "Возможный Плохой Ход",
-                 commentCheckboxRisky: "Рискованный",
-                 commentCheckboxSafe: "Безопасный",
+                 // --- НОВЫЕ ОПЦИИ КОММЕНТАРИЯ ---
+                 commentOptionNoSeedsBC: "Нет семян в лунках B и C",
+                 commentOptionOffensiveCapture: "Быть Наступательным (захват) > Оборонительным (уход)",
+                 commentOptionBuildKrouOffensive: "Строить Наступательный Кру (D/E/F) > Оборонительный",
+                 commentOptionBuildKrouDefensive: "Строить Оборонительный Кру (C/D/E) > Наступательный",
+                 commentOptionBlockCounterKrou: "Блокировать Контр-Кру Противника",
+                 commentOptionBuild2Krous: "Строить 2 Кру одновременно",
+                 commentOptionCaptureLimit3: "Множественный захват ограничен 3 лунками",
+                 commentOptionCaptureMax5: "Максимальный множественный захват (5 лунок)",
+                 commentOptionAccelerate: "Ускорить игру",
+                 commentOptionSlowDown: "Замедлить игру",
+                 commentOptionTechErrorSelect: "Техническая ошибка выбора лунки",
+                 // --- КОНЕЦ НОВЫХ ОПЦИЙ ---
                  historyTitle: "История Игр",
                  historyRecordTitle: (name, date) => `Игра: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Успех: ${rate}% | Финальный Банк: ${pot}€ | Длительность: ${duration}с`,
@@ -727,15 +773,24 @@
                  helpTitle: "帮助与目标",
                  helpTextStandard: `<strong>欢迎来到 Awalé 大脑训练!</strong><br><br>您的目标是<strong>像冠军一样思考</strong>，在每次轮到您时 (玩家 😊 ↓) 猜测他们在真实棋局中走出的那一步。<br><br><strong>玩法说明:</strong><br>1. 选择一种语言和前3个可用棋局之一。<br>2. 轮到您时 (😊 ↓)，观察棋盘。<br>3. 点击您其中一个包含棋子 (种子) 的棋穴 (A-F) 来选择它。<br>4. 选择您虚拟彩池的一个百分比，对此选择下注。<br>5. 点击 '下注!'。如果您的选择正确，您赢得赌注。否则，您输掉赌注。<br>6. 轮到对手时 (😔 ↑)，点击 '下一步'。<br><br><strong>升级到高级版!</strong><br>为了获得完整体验并支持我们的协会，请加入 <a href="https://jeuxnomadesfrance.jimdofree.com/" target="_blank" rel="noopener noreferrer">Jeux Nomades France</a>。高级版解锁以下功能：<ul><li>访问<strong>所有训练棋局</strong>。</li><li><strong>"历史"</strong> (历史记录) 和 <strong>"记录"</strong> (记录笔记) 按钮。</li><li>激活<strong>视觉辅助</strong> (抓子/压力指示)。</li><li>激活<strong>红色对齐十字线</strong>。</li><li>访问<strong>秘密提示</strong>。</li></ul>`,
                  helpTextPremium: `<strong>欢迎来到高级版!</strong><br><br>您可以使用所有功能来训练自己像冠军一样思考。<br><br><strong>高级版功能:</strong><br><ul><li><strong>所有棋局:</strong> 通过选择器访问所有棋局。</li><li><strong>历史 ("历史"):</strong> 查看您过去的棋局、统计数据和评论。</li><li><strong>通过 JSON 导出进行 AI 指导:</strong> 使用历史记录中的 "复制 (JSON)" 按钮。将复制的文本粘贴到对话式人工智能 (如 ChatGPT, Gemini, Mistral 等) 中。包含的提示将要求 AI 分析您的棋局 (错误、评论) 并为您提供个性化的指导建议，直接使用应用程序中选择的语言！</li><li><strong>记录 ("记录"):</strong> 为每一步棋添加战略笔记。</li><li><strong>视觉辅助:</strong><ul><li>激活/停用: 长按 (3秒) 右上角的 <strong>+</strong> 按钮。</li><li>闪烁的橙色对手棋穴: 您选择的步数直接抓子。</li><li>带橙色边框的对手棋穴: 未来可能抓子的压力。</li><li>带橙色虚线边框的您的棋穴: 对手抓子的威胁。</li></ul></li><li><strong>红十字线:</strong><ul><li>激活/停用: 单击右上角的 <strong>+</strong> 按钮。</li><li>帮助可视化棋穴对齐。</li></ul></li></ul><strong>可激活的秘密提示:</strong><br><ul><li><strong>Logo x3 点击:</strong> 重置当前棋局。</li><li><strong>彩池 x3 点击:</strong> 切换 "保证成功" 模式 (所有下注都赢)。</li><li><strong>"我下注" 文本 x3 点击:</strong> 锁定/解锁选定的下注百分比。</li><li><strong>对手 'a' 棋穴 (长按 2秒):</strong> 撤销上一步棋。</li><li><strong>对手 'f' + 'a' 棋穴 (同时长按 3秒):</strong> 显示秘密提示列表。</li></ul>`,
-                 secretMessage: "你好 Eric",
+                 secretMessage: "你好",
                  secretTipsTitle: "秘密提示 (高级版)",
-                 secretTips: [ "Logo x3 点击: 重置棋局", "彩池 x3 点击: 保证成功 开/关", "'我下注' x3 点击: 锁定/解锁 下注 (%)", "对手 'f' 棋穴 (长按 2秒): 你好 Eric", "对手 'a' 棋穴 (长按 2秒): 撤销上一步", "对手 'f' + 'a' 棋穴 (同时长按 3秒): 显示此列表" ],
+                 secretTips: [ "Logo x3 点击: 重置棋局", "彩池 x3 点击: 保证成功 开/关", "'我下注' x3 点击: 锁定/解锁 下注 (%)", "对手 'f' 棋穴 (长按 2秒): 你好", "对手 'a' 棋穴 (长按 2秒): 撤销上一步", "对手 'f' + 'a' 棋穴 (同时长按 3秒): 显示此列表" ],
                  commentModalTitle: "添加评论",
                  commentInputPlaceholder: "在此处输入您的战略笔记...",
-                 commentCheckboxGood: "潜在好棋",
-                 commentCheckboxBad: "潜在坏棋",
-                 commentCheckboxRisky: "有风险",
-                 commentCheckboxSafe: "安全",
+                 // --- 新评论选项 ---
+                 commentOptionNoSeedsBC: "B 和 C 洞中没有种子",
+                 commentOptionOffensiveCapture: "进攻（抓子） > 防守（逃脱）",
+                 commentOptionBuildKrouOffensive: "构建进攻性克鲁 (D/E/F) > 防守性",
+                 commentOptionBuildKrouDefensive: "构建防御性克鲁 (C/D/E) > 进攻性",
+                 commentOptionBlockCounterKrou: "阻止对手的反克鲁",
+                 commentOptionBuild2Krous: "同时构建 2 个克鲁",
+                 commentOptionCaptureLimit3: "多重抓子限制在 3 个洞",
+                 commentOptionCaptureMax5: "最大多重抓子（5 个洞）",
+                 commentOptionAccelerate: "加快游戏速度",
+                 commentOptionSlowDown: "减慢游戏速度",
+                 commentOptionTechErrorSelect: "技术性选洞错误",
+                 // --- 结束新选项 ---
                  historyTitle: "棋局历史",
                  historyRecordTitle: (name, date) => `棋局: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `成功率: ${rate}% | 最终彩池: ${pot}€ | 时长: ${duration}秒`,
@@ -831,7 +886,7 @@
             catch (e) { console.error("Error saving game records:", e); }
         }
 
-        // --- Fonction de Mise à Jour Langue (Complète) ---
+        // --- Fonction de Mise à Jour Langue (Modifiée pour les nouvelles checkboxes) ---
         function updateLanguage() {
             currentLanguage = document.getElementById("language-select").value || "fr";
             const t = translations[currentLanguage] || translations.en;
@@ -883,7 +938,8 @@
                  if(historyResetBtn) historyResetBtn.textContent = t.resetButton;
                  const historyCloseBtn = document.getElementById('history-close-btn');
                  if(historyCloseBtn) historyCloseBtn.textContent = t.closeButton;
-                 // Comment Modal
+
+                 // --- MODIFICATION: Comment Modal ---
                  document.getElementById("comment-title").textContent = t.commentModalTitle;
                  const commentInput = document.getElementById("comment-input");
                  if(commentInput) commentInput.placeholder = t.commentInputPlaceholder;
@@ -891,10 +947,29 @@
                  if(commentSaveBtn) commentSaveBtn.textContent = t.saveButton;
                  const commentCancelBtn = document.getElementById('comment-cancel-btn');
                  if(commentCancelBtn) commentCancelBtn.textContent = t.cancelButton;
-                 document.querySelector('input[name="comment-option"][value="GoodMove"] + .checkbox-label-text').textContent = t.commentCheckboxGood;
-                 document.querySelector('input[name="comment-option"][value="BadMove"] + .checkbox-label-text').textContent = t.commentCheckboxBad;
-                 document.querySelector('input[name="comment-option"][value="Risky"] + .checkbox-label-text').textContent = t.commentCheckboxRisky;
-                 document.querySelector('input[name="comment-option"][value="Safe"] + .checkbox-label-text').textContent = t.commentCheckboxSafe;
+
+                 // --- MODIFICATION: Update 11 checkbox labels ---
+                 const setCheckboxLabel = (value, translationKey) => {
+                     const span = document.querySelector(`input[name="comment-option"][value="${value}"] + .checkbox-label-text`);
+                     if (span && t[translationKey]) {
+                         span.textContent = t[translationKey];
+                     } else if(span) {
+                         span.textContent = value; // Fallback if translation key is missing
+                     }
+                 };
+                 setCheckboxLabel("NoSeedsBC", "commentOptionNoSeedsBC");
+                 setCheckboxLabel("OffensiveCapture", "commentOptionOffensiveCapture");
+                 setCheckboxLabel("BuildKrouOffensive", "commentOptionBuildKrouOffensive");
+                 setCheckboxLabel("BuildKrouDefensive", "commentOptionBuildKrouDefensive");
+                 setCheckboxLabel("BlockCounterKrou", "commentOptionBlockCounterKrou");
+                 setCheckboxLabel("Build2Krous", "commentOptionBuild2Krous");
+                 setCheckboxLabel("CaptureLimit3", "commentOptionCaptureLimit3");
+                 setCheckboxLabel("CaptureMax5", "commentOptionCaptureMax5");
+                 setCheckboxLabel("Accelerate", "commentOptionAccelerate");
+                 setCheckboxLabel("SlowDown", "commentOptionSlowDown");
+                 setCheckboxLabel("TechErrorSelect", "commentOptionTechErrorSelect");
+                 // --- FIN MODIFICATION CHECKBOX LABELS ---
+
                 // Premium Modal (only if open, otherwise use function)
                 if (document.getElementById('premium-info-modal').style.display === 'block') {
                     showPremiumInfoModal();
@@ -1459,7 +1534,7 @@
              }, 800);
         }
 
-        // --- Fonctions Historique, Commentaires, Enregistrements ---
+        // --- Fonctions Historique, Commentaires, Enregistrements (Modifiée saveComment) ---
         function startNewGameRecord() {
             if (currentGameRecord.startTime && !currentGameRecord.endTime) { finalizeGameRecord(); }
             gameStartTime = Date.now();
@@ -1513,29 +1588,62 @@
             const commentInput = document.getElementById('comment-input'); if (commentInput) commentInput.value = '';
             document.querySelectorAll('input[name="comment-option"]').forEach(checkbox => checkbox.checked = false);
         }
+
+        // --- MODIFICATION: saveComment to use new options ---
         function saveComment() {
-             if (!currentGameRecord || !currentGameRecord.startTime) { console.warn("Cannot save comment: No active game record."); closeModal('comment-modal'); return; }
+             if (!currentGameRecord || !currentGameRecord.startTime) {
+                 console.warn("Cannot save comment: No active game record.");
+                 closeModal('comment-modal');
+                 return;
+             }
              const t = translations[currentLanguage] || translations.en;
              const commentInput = document.getElementById('comment-input');
              const checkboxes = document.querySelectorAll('input[name="comment-option"]:checked');
              let commentText = commentInput ? commentInput.value.trim() : '';
+
+             // Map checkbox values to their corresponding translation keys
+             const valueToTranslationKeyMap = {
+                 "NoSeedsBC": "commentOptionNoSeedsBC",
+                 "OffensiveCapture": "commentOptionOffensiveCapture",
+                 "BuildKrouOffensive": "commentOptionBuildKrouOffensive",
+                 "BuildKrouDefensive": "commentOptionBuildKrouDefensive",
+                 "BlockCounterKrou": "commentOptionBlockCounterKrou",
+                 "Build2Krous": "commentOptionBuild2Krous",
+                 "CaptureLimit3": "commentOptionCaptureLimit3",
+                 "CaptureMax5": "commentOptionCaptureMax5",
+                 "Accelerate": "commentOptionAccelerate",
+                 "SlowDown": "commentOptionSlowDown",
+                 "TechErrorSelect": "commentOptionTechErrorSelect"
+             };
+
              const checkedOptions = Array.from(checkboxes).map(checkbox => {
-                 switch (checkbox.value) {
-                     case 'GoodMove': return t.commentCheckboxGood; case 'BadMove': return t.commentCheckboxBad;
-                     case 'Risky': return t.commentCheckboxRisky; case 'Safe': return t.commentCheckboxSafe;
-                     default: return checkbox.value;
-                 }
+                 const translationKey = valueToTranslationKeyMap[checkbox.value];
+                 // Return the translated text if found, otherwise fallback to the value
+                 return t[translationKey] || checkbox.value;
              });
+
              if (commentText || checkedOptions.length > 0) {
                  const moveIndexForLabel = currentMoveIndex >= 0 ? currentMoveIndex + 1 : 0;
                  const moveLabel = moveIndexForLabel > 0 ? `${moveIndexForLabel}/${currentGame.length}` : "Start";
                  const moveCodePlayed = currentMoveIndex >= 0 ? currentGame[currentMoveIndex] : null;
-                 const fullComment = { move: moveLabel, moveCode: moveCodePlayed, timestamp: Date.now(), text: commentText, options: checkedOptions };
-                 if (!Array.isArray(currentGameRecord.comments)) { currentGameRecord.comments = []; }
+                 const fullComment = {
+                     move: moveLabel,
+                     moveCode: moveCodePlayed,
+                     timestamp: Date.now(),
+                     text: commentText,
+                     options: checkedOptions
+                 };
+
+                 if (!Array.isArray(currentGameRecord.comments)) {
+                     currentGameRecord.comments = [];
+                 }
                  currentGameRecord.comments.push(fullComment);
+                 console.log("Comment saved:", fullComment);
              }
              closeModal('comment-modal');
         }
+        // --- FIN MODIFICATION saveComment ---
+
         function openHistoryModal() {
              if (!isPremium) { showPremiumInfoModal(); return; }
              const t = translations[currentLanguage] || translations.en;
