@@ -103,12 +103,11 @@
         .bet-buttons { display: flex; justify-content: center; align-items: center; gap: clamp(5px, 2vw, 10px); flex-wrap: wrap; }
         #help-modal, #secret-modal, #comment-modal, #history-modal, #premium-info-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; max-width: 90%; width: 500px; max-height: 85vh; overflow-y: auto; }
         #help-modal button, #secret-modal button, #comment-modal button, #history-modal button:not(.history-buttons button), #premium-info-modal button { margin-top: 15px; }
-        /* --- MODIF: Ajuster la hauteur min si nécessaire pour les 11 options --- */
-        #comment-modal { height: auto; min-height: 480px; /* Augmenté pour plus d'espace */ }
+        #comment-modal { height: auto; /* Removed min-height */ } /* Adjusted comment modal height */
         .comment-section { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        #comment-input { width: calc(100% - 10px); height: 80px; /* Légèrement réduit pour compenser la hauteur des checkboxes */ resize: vertical; padding: 5px; margin-bottom: 5px; border: 1px solid #ccc;}
-        .checkbox-section { margin-top: 5px; }
-        .checkbox-section label { display: flex; align-items: center; margin-bottom: 6px; cursor: pointer;}
+        #comment-input { width: calc(100% - 10px); height: 60px; resize: vertical; padding: 5px; margin-bottom: 5px; border: 1px solid #ccc;} /* Reduced textarea height */
+        .checkbox-section { margin-top: 5px; column-count: 2; column-gap: 15px; } /* Added columns */
+        .checkbox-section label { display: flex; align-items: center; margin-bottom: 6px; cursor: pointer; break-inside: avoid-column; } /* Prevent breaking inside columns */
         .checkbox-section input[type="checkbox"] { margin-right: 8px;}
         #history-content { margin-bottom: 10px; font-family: monospace; }
         .history-buttons { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
@@ -130,7 +129,19 @@
         #help-modal ul { list-style: disc; margin-left: 25px; margin-top: 10px;}
         #help-modal li { margin-bottom: 8px; }
 
-        @media (max-width: 480px) { body { padding: 5px 0; } #game-area { width: 95vw; gap: 0.8vh;} .logo-row { gap: 10px; } .button-yellow, .button-next, .button-small { padding: 8px 10px; font-size: 0.9em; margin: 3px; } .bet-buttons { gap: 5px; } .history-buttons { justify-content: center; } .pot-container { gap: 8px; } #bet-pot-info, #success-rate { padding: 5px 8px; } #help-modal, #secret-modal, #comment-modal, #history-modal, #premium-info-modal { width: 95%; max-height: 80vh; } .hole, .board-label { width: 14vw; max-width: 60px; height: 14vw; max-height: 60px; margin: 0.4vw; font-size: clamp(0.9em, 3.5vw, 1.6em); } }
+        @media (max-width: 480px) {
+            body { padding: 5px 0; }
+            #game-area { width: 95vw; gap: 0.8vh;}
+            .logo-row { gap: 10px; }
+            .button-yellow, .button-next, .button-small { padding: 8px 10px; font-size: 0.9em; margin: 3px; }
+            .bet-buttons { gap: 5px; }
+            .history-buttons { justify-content: center; }
+            .pot-container { gap: 8px; }
+            #bet-pot-info, #success-rate { padding: 5px 8px; }
+            #help-modal, #secret-modal, #comment-modal, #history-modal, #premium-info-modal { width: 95%; max-height: 80vh; }
+            .hole, .board-label { width: 14vw; max-width: 60px; height: 14vw; max-height: 60px; margin: 0.4vw; font-size: clamp(0.9em, 3.5vw, 1.6em); }
+            .checkbox-section { column-count: 1; } /* Single column on smaller screens */
+        }
     </style>
 </head>
 <body>
@@ -202,7 +213,7 @@
         </div>
     </div>
 
-    <!-- Modals (structure identique, sauf #comment-modal) -->
+    <!-- Modals (structure identique) -->
      <div id="help-modal">
         <h2 id="help-title"></h2>
         <div id="help-text"></div>
@@ -213,23 +224,23 @@
         <ul id="secret-tips"></ul>
         <button onclick="closeModal('secret-modal')" class="button-close" id="secret-modal-close"></button>
     </div>
-    <!-- MODIFICATION: #comment-modal structure des checkboxes -->
     <div id="comment-modal">
         <h3 id="comment-title"></h3>
         <div class="comment-section">
             <textarea id="comment-input" placeholder=""></textarea>
              <div class="checkbox-section">
-                <label><input type="checkbox" name="comment-option" value="NoSeedsBC"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="OffensiveCapture"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="BuildKrouOffensive"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="BuildKrouDefensive"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="BlockCounterKrou"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="Build2Krous"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="CaptureLimit3"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="CaptureMax5"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="Accelerate"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="SlowDown"> <span class="checkbox-label-text"></span></label>
-                <label><input type="checkbox" name="comment-option" value="TechErrorSelect"> <span class="checkbox-label-text"></span></label>
+                 <!-- Les "value" sont utilisés comme clés pour la traduction -->
+                 <label><input type="checkbox" name="comment-option" value="NoSeedsBC"> <span class="checkbox-label-text">Aucune graines en case B et C</span></label>
+                 <label><input type="checkbox" name="comment-option" value="OffensiveOverDefensive"> <span class="checkbox-label-text">Etre Offensif (capture) > Défensif (échappé)</span></label>
+                 <label><input type="checkbox" name="comment-option" value="BuildKrouOffensive"> <span class="checkbox-label-text">Construire Krou Offensif (D/E/F) > Défensif</span></label>
+                 <label><input type="checkbox" name="comment-option" value="BuildKrouDefensive"> <span class="checkbox-label-text">Construire Krou Défensif (C/D/E) > Offensif</span></label>
+                 <label><input type="checkbox" name="comment-option" value="BlockOpponentKrou"> <span class="checkbox-label-text">Bloquer le Contre-Krou Adverse</span></label>
+                 <label><input type="checkbox" name="comment-option" value="BuildTwoKrous"> <span class="checkbox-label-text">Construire 2 Krous en même temps</span></label>
+                 <label><input type="checkbox" name="comment-option" value="MultiCaptureLimit3"> <span class="checkbox-label-text">Capture multiple limité à 3 cases</span></label>
+                 <label><input type="checkbox" name="comment-option" value="MultiCaptureMax5"> <span class="checkbox-label-text">Capture multiple max (5 cases)</span></label>
+                 <label><input type="checkbox" name="comment-option" value="SpeedUpGame"> <span class="checkbox-label-text">Accélérer le jeu</span></label>
+                 <label><input type="checkbox" name="comment-option" value="SlowDownGame"> <span class="checkbox-label-text">Ralentir le jeu</span></label>
+                 <label><input type="checkbox" name="comment-option" value="TechnicalSelectionError"> <span class="checkbox-label-text">Erreur technique de sélection de case</span></label>
             </div>
         </div>
         <div style="text-align: center; margin-top: 20px;">
@@ -237,7 +248,6 @@
             <button class="button-close" onclick="closeModal('comment-modal')" id="comment-cancel-btn"></button>
         </div>
     </div>
-    <!-- FIN MODIFICATION #comment-modal -->
     <div id="history-modal">
         <h3 id="history-title"></h3>
         <div id="history-content"></div>
@@ -269,6 +279,7 @@
     <script>
         // !!! LOGIQUE DE JEU MISE A JOUR !!!
         // simulateMove ne modifie plus l'état global directement.
+        // finalizeGameRecord est appelé depuis betAndVerify et moveNext si fin de partie.
 
         // --- Variables Globales (Identiques) ---
         let isPremium = false;
@@ -308,7 +319,7 @@
         const playerHoleCodes = ['A', 'B', 'C', 'D', 'E', 'F'];
         let isGameOver = { confettiShown: false };
 
-        // --- Objet Translations (MODIFIÉ pour les nouvelles options de commentaire) ---
+        // --- Objet Translations (AJOUT des nouvelles options de commentaire) ---
         const translations = {
              fr: {
                  pageTitle: "Dans la Tête d'un Champion",
@@ -374,19 +385,19 @@
                  secretTips: [ "Logo x3 clics : Reset partie", "Cagnotte x3 clics : Succès garanti ON/OFF", "'Je mise' x3 clics : Verrouille/Déverrouille mise (%)", "Case 'f' adverse (appui 2s) : Bonjour", "Case 'a' adverse (appui 2s) : Retour arrière (annule dernier coup)", "Cases 'f' + 'a' adverses (appui 3s simultané) : Montre cette liste" ],
                  commentModalTitle: "Ajouter un Commentaire",
                  commentInputPlaceholder: "Votre note stratégique ici...",
-                 // --- NOUVELLES OPTIONS COMMENTAIRE ---
-                 commentOptionNoSeedsBC: "Aucune graines en case B et C",
-                 commentOptionOffensiveCapture: "Etre Offensif (capture) > Défensif (échappé)",
-                 commentOptionBuildKrouOffensive: "Construire Krou Offensif (D/E/F) > Défensif",
-                 commentOptionBuildKrouDefensive: "Construire Krou Défensif (C/D/E) > Offensif",
-                 commentOptionBlockCounterKrou: "Bloquer le Contre-Krou Adverse",
-                 commentOptionBuild2Krous: "Construire 2 Krous en même temps",
-                 commentOptionCaptureLimit3: "Capture multiple limité à 3 cases",
-                 commentOptionCaptureMax5: "Capture multiple max (5 cases)",
-                 commentOptionAccelerate: "Accélérer le jeu",
-                 commentOptionSlowDown: "Ralentir le jeu",
-                 commentOptionTechErrorSelect: "Erreur technique de sélection de case",
-                 // --- FIN NOUVELLES OPTIONS ---
+                 // START: Added translations for new comment options (fr)
+                 commentOptNoSeedsBC: "Aucune graines en case B et C",
+                 commentOptOffensiveOverDefensive: "Etre Offensif (capture) > Défensif (échappé)",
+                 commentOptBuildKrouOffensive: "Construire Krou Offensif (D/E/F) > Défensif",
+                 commentOptBuildKrouDefensive: "Construire Krou Défensif (C/D/E) > Offensif",
+                 commentOptBlockOpponentKrou: "Bloquer le Contre-Krou Adverse",
+                 commentOptBuildTwoKrous: "Construire 2 Krous en même temps",
+                 commentOptMultiCaptureLimit3: "Capture multiple limité à 3 cases",
+                 commentOptMultiCaptureMax5: "Capture multiple max (5 cases)",
+                 commentOptSpeedUpGame: "Accélérer le jeu",
+                 commentOptSlowDownGame: "Ralentir le jeu",
+                 commentOptTechnicalSelectionError: "Erreur technique de sélection de case",
+                 // END: Added translations for new comment options (fr)
                  historyTitle: "Historique des Parties",
                  historyRecordTitle: (name, date) => `Partie: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Réussite: ${rate}% | Pot final: ${pot}€ | Durée: ${duration}s`,
@@ -475,19 +486,19 @@
                  secretTips: [ "Logo x3 clicks: Reset game", "Pot x3 clicks: Guaranteed Success ON/OFF", "'I bet' x3 clicks: Lock/Unlock bet (%)", "Opponent 'f' hole (2s press): Hello", "Opponent 'a' hole (2s press): Undo last move", "Opponent 'f' + 'a' holes (3s simultaneous press): Show this list" ],
                  commentModalTitle: "Add a Comment",
                  commentInputPlaceholder: "Your strategic note here...",
-                 // --- NEW COMMENT OPTIONS ---
-                 commentOptionNoSeedsBC: "No seeds in holes B and C",
-                 commentOptionOffensiveCapture: "Be Offensive (capture) > Defensive (escape)",
-                 commentOptionBuildKrouOffensive: "Build Offensive Krou (D/E/F) > Defensive",
-                 commentOptionBuildKrouDefensive: "Build Defensive Krou (C/D/E) > Offensive",
-                 commentOptionBlockCounterKrou: "Block Opponent's Counter-Krou",
-                 commentOptionBuild2Krous: "Build 2 Krous Simultaneously",
-                 commentOptionCaptureLimit3: "Multiple Capture Limited to 3 Holes",
-                 commentOptionCaptureMax5: "Max Multiple Capture (5 Holes)",
-                 commentOptionAccelerate: "Speed Up the Game",
-                 commentOptionSlowDown: "Slow Down the Game",
-                 commentOptionTechErrorSelect: "Technical Hole Selection Error",
-                 // --- END NEW OPTIONS ---
+                 // START: Added translations for new comment options (en)
+                 commentOptNoSeedsBC: "No seeds in holes B and C",
+                 commentOptOffensiveOverDefensive: "Be Offensive (capture) > Defensive (escape)",
+                 commentOptBuildKrouOffensive: "Build Offensive Krou (D/E/F) > Defensive",
+                 commentOptBuildKrouDefensive: "Build Defensive Krou (C/D/E) > Offensive",
+                 commentOptBlockOpponentKrou: "Block Opponent's Counter-Krou",
+                 commentOptBuildTwoKrous: "Build 2 Krous at the same time",
+                 commentOptMultiCaptureLimit3: "Multiple capture limited to 3 holes",
+                 commentOptMultiCaptureMax5: "Max multiple capture (5 holes)",
+                 commentOptSpeedUpGame: "Speed up the game",
+                 commentOptSlowDownGame: "Slow down the game",
+                 commentOptTechnicalSelectionError: "Technical error selecting hole",
+                 // END: Added translations for new comment options (en)
                  historyTitle: "Game History",
                  historyRecordTitle: (name, date) => `Game: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Success: ${rate}% | Final Pot: ${pot}€ | Duration: ${duration}s`,
@@ -576,19 +587,19 @@
                  secretTips: [ "Logo x3 clics: Reset partida", "Pozo x3 clics: Éxito garantizado ON/OFF", "'Apuesto' x3 clics: Bloquear/Desbloquear apuesta (%)", "Casilla 'f' oponente (pulsación 2s): Hola", "Casilla 'a' oponente (pulsación 2s): Deshacer última jugada", "Casillas 'f' + 'a' oponentes (pulsación 3s simultánea): Muestra esta lista" ],
                  commentModalTitle: "Añadir un Comentario",
                  commentInputPlaceholder: "Tu nota estratégica aquí...",
-                 // --- NUEVAS OPCIONES COMENTARIO ---
-                 commentOptionNoSeedsBC: "Sin semillas en las casillas B y C",
-                 commentOptionOffensiveCapture: "Ser Ofensivo (captura) > Defensivo (escape)",
-                 commentOptionBuildKrouOffensive: "Construir Krou Ofensivo (D/E/F) > Defensivo",
-                 commentOptionBuildKrouDefensive: "Construir Krou Defensivo (C/D/E) > Ofensivo",
-                 commentOptionBlockCounterKrou: "Bloquear el Contra-Krou Adversario",
-                 commentOptionBuild2Krous: "Construir 2 Krous al mismo tiempo",
-                 commentOptionCaptureLimit3: "Captura múltiple limitada a 3 casillas",
-                 commentOptionCaptureMax5: "Captura múltiple máxima (5 casillas)",
-                 commentOptionAccelerate: "Acelerar el juego",
-                 commentOptionSlowDown: "Ralentizar el juego",
-                 commentOptionTechErrorSelect: "Error técnico de selección de casilla",
-                 // --- FIN NUEVAS OPCIONES ---
+                 // START: Added translations for new comment options (es)
+                 commentOptNoSeedsBC: "Sin semillas en casillas B y C",
+                 commentOptOffensiveOverDefensive: "Ser Ofensivo (captura) > Defensivo (escape)",
+                 commentOptBuildKrouOffensive: "Construir Krou Ofensivo (D/E/F) > Defensivo",
+                 commentOptBuildKrouDefensive: "Construir Krou Defensivo (C/D/E) > Ofensivo",
+                 commentOptBlockOpponentKrou: "Bloquear el Contra-Krou Adversario",
+                 commentOptBuildTwoKrous: "Construir 2 Krous al mismo tiempo",
+                 commentOptMultiCaptureLimit3: "Captura múltiple limitada a 3 casillas",
+                 commentOptMultiCaptureMax5: "Captura múltiple máx. (5 casillas)",
+                 commentOptSpeedUpGame: "Acelerar el juego",
+                 commentOptSlowDownGame: "Ralentizar el juego",
+                 commentOptTechnicalSelectionError: "Error técnico de selección de casilla",
+                 // END: Added translations for new comment options (es)
                  historyTitle: "Historial de Partidas",
                  historyRecordTitle: (name, date) => `Partida: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Éxito: ${rate}% | Pozo final: ${pot}€ | Duración: ${duration}s`,
@@ -677,19 +688,19 @@
                  secretTips: [ "Логотип x3 клика: Сброс игры", "Банк x3 клика: Гарантированный Успех ВКЛ/ВЫКЛ", "'Ставка' x3 клика: Блокировать/Разблокировать ставку (%)", "Лунка 'f' противника (нажатие 2с): Привет, Эрик", "Лунка 'a' противника (нажатие 2с): Отменить последний ход", "Лунки 'f' + 'a' противника (нажатие 3с одновременно): Показать этот список" ],
                  commentModalTitle: "Добавить Комментарий",
                  commentInputPlaceholder: "Ваша стратегическая заметка здесь...",
-                 // --- НОВЫЕ ОПЦИИ КОММЕНТАРИЯ ---
-                 commentOptionNoSeedsBC: "Нет семян в лунках B и C",
-                 commentOptionOffensiveCapture: "Быть Наступательным (захват) > Оборонительным (уход)",
-                 commentOptionBuildKrouOffensive: "Строить Наступательный Кру (D/E/F) > Оборонительный",
-                 commentOptionBuildKrouDefensive: "Строить Оборонительный Кру (C/D/E) > Наступательный",
-                 commentOptionBlockCounterKrou: "Блокировать Контр-Кру Противника",
-                 commentOptionBuild2Krous: "Строить 2 Кру одновременно",
-                 commentOptionCaptureLimit3: "Множественный захват ограничен 3 лунками",
-                 commentOptionCaptureMax5: "Максимальный множественный захват (5 лунок)",
-                 commentOptionAccelerate: "Ускорить игру",
-                 commentOptionSlowDown: "Замедлить игру",
-                 commentOptionTechErrorSelect: "Техническая ошибка выбора лунки",
-                 // --- КОНЕЦ НОВЫХ ОПЦИЙ ---
+                 // START: Added translations for new comment options (ru)
+                 commentOptNoSeedsBC: "Нет семян в лунках B и C",
+                 commentOptOffensiveOverDefensive: "Быть Наступательным (захват) > Оборонительным (уход)",
+                 commentOptBuildKrouOffensive: "Строить Наступательный Кру (D/E/F) > Оборонительный",
+                 commentOptBuildKrouDefensive: "Строить Оборонительный Кру (C/D/E) > Наступательный",
+                 commentOptBlockOpponentKrou: "Блокировать Контр-Кру Противника",
+                 commentOptBuildTwoKrous: "Строить 2 Кру одновременно",
+                 commentOptMultiCaptureLimit3: "Множественный захват ограничен 3 лунками",
+                 commentOptMultiCaptureMax5: "Макс. множественный захват (5 лунок)",
+                 commentOptSpeedUpGame: "Ускорить игру",
+                 commentOptSlowDownGame: "Замедлить игру",
+                 commentOptTechnicalSelectionError: "Техническая ошибка выбора лунки",
+                 // END: Added translations for new comment options (ru)
                  historyTitle: "История Игр",
                  historyRecordTitle: (name, date) => `Игра: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `Успех: ${rate}% | Финальный Банк: ${pot}€ | Длительность: ${duration}с`,
@@ -778,19 +789,19 @@
                  secretTips: [ "Logo x3 点击: 重置棋局", "彩池 x3 点击: 保证成功 开/关", "'我下注' x3 点击: 锁定/解锁 下注 (%)", "对手 'f' 棋穴 (长按 2秒): 你好", "对手 'a' 棋穴 (长按 2秒): 撤销上一步", "对手 'f' + 'a' 棋穴 (同时长按 3秒): 显示此列表" ],
                  commentModalTitle: "添加评论",
                  commentInputPlaceholder: "在此处输入您的战略笔记...",
-                 // --- 新评论选项 ---
-                 commentOptionNoSeedsBC: "B 和 C 洞中没有种子",
-                 commentOptionOffensiveCapture: "进攻（抓子） > 防守（逃脱）",
-                 commentOptionBuildKrouOffensive: "构建进攻性克鲁 (D/E/F) > 防守性",
-                 commentOptionBuildKrouDefensive: "构建防御性克鲁 (C/D/E) > 进攻性",
-                 commentOptionBlockCounterKrou: "阻止对手的反克鲁",
-                 commentOptionBuild2Krous: "同时构建 2 个克鲁",
-                 commentOptionCaptureLimit3: "多重抓子限制在 3 个洞",
-                 commentOptionCaptureMax5: "最大多重抓子（5 个洞）",
-                 commentOptionAccelerate: "加快游戏速度",
-                 commentOptionSlowDown: "减慢游戏速度",
-                 commentOptionTechErrorSelect: "技术性选洞错误",
-                 // --- 结束新选项 ---
+                 // START: Added translations for new comment options (zh)
+                 commentOptNoSeedsBC: "B 和 C 洞中没有种子",
+                 commentOptOffensiveOverDefensive: "采取进攻（吃子）> 防守（逃脱）",
+                 commentOptBuildKrouOffensive: "建立进攻性 Krou (D/E/F) > 防守性",
+                 commentOptBuildKrouDefensive: "建立防守性 Krou (C/D/E) > 进攻性",
+                 commentOptBlockOpponentKrou: "阻止对手的反 Krou",
+                 commentOptBuildTwoKrous: "同时建立 2 个 Krous",
+                 commentOptMultiCaptureLimit3: "多重吃子限制为 3 个洞",
+                 commentOptMultiCaptureMax5: "最大多重吃子（5 个洞）",
+                 commentOptSpeedUpGame: "加快游戏",
+                 commentOptSlowDownGame: "减慢游戏",
+                 commentOptTechnicalSelectionError: "选择洞的技术错误",
+                 // END: Added translations for new comment options (zh)
                  historyTitle: "棋局历史",
                  historyRecordTitle: (name, date) => `棋局: ${name} (${date})`,
                  historyStats: (rate, pot, duration) => `成功率: ${rate}% | 最终彩池: ${pot}€ | 时长: ${duration}秒`,
@@ -807,7 +818,7 @@
                  premiumBenefitLevels: "访问所有训练棋局。",
                  premiumBenefitHistory: "“历史”按钮可查看和分析您过去的棋局。",
                  premiumBenefitRecord: "“记录”按钮可添加战略评论。",
-                 premiumBenefitAids: "激活视觉辅助（抓子/压力）。",
+                 premiumBenefitAids: "激活视觉辅助（吃子/压力）。",
                  premiumBenefitCross: "激活红色对齐十字线。",
                  premiumBenefitSecrets: "访问秘密提示。",
                  premiumModalHowto: "要解锁高级版并支持我们的协会，请成为 <strong>Jeux Nomades France</strong> 的会员：",
@@ -886,7 +897,7 @@
             catch (e) { console.error("Error saving game records:", e); }
         }
 
-        // --- Fonction de Mise à Jour Langue (Modifiée pour les nouvelles checkboxes) ---
+        // --- Fonction de Mise à Jour Langue (MODIFIÉE pour inclure les nouvelles options de commentaire) ---
         function updateLanguage() {
             currentLanguage = document.getElementById("language-select").value || "fr";
             const t = translations[currentLanguage] || translations.en;
@@ -938,8 +949,7 @@
                  if(historyResetBtn) historyResetBtn.textContent = t.resetButton;
                  const historyCloseBtn = document.getElementById('history-close-btn');
                  if(historyCloseBtn) historyCloseBtn.textContent = t.closeButton;
-
-                 // --- MODIFICATION: Comment Modal ---
+                 // Comment Modal
                  document.getElementById("comment-title").textContent = t.commentModalTitle;
                  const commentInput = document.getElementById("comment-input");
                  if(commentInput) commentInput.placeholder = t.commentInputPlaceholder;
@@ -948,27 +958,31 @@
                  const commentCancelBtn = document.getElementById('comment-cancel-btn');
                  if(commentCancelBtn) commentCancelBtn.textContent = t.cancelButton;
 
-                 // --- MODIFICATION: Update 11 checkbox labels ---
-                 const setCheckboxLabel = (value, translationKey) => {
-                     const span = document.querySelector(`input[name="comment-option"][value="${value}"] + .checkbox-label-text`);
-                     if (span && t[translationKey]) {
-                         span.textContent = t[translationKey];
-                     } else if(span) {
-                         span.textContent = value; // Fallback if translation key is missing
+                 // --- START: Update new comment checkbox labels ---
+                 const commentOptions = [
+                     { value: "NoSeedsBC", key: "commentOptNoSeedsBC" },
+                     { value: "OffensiveOverDefensive", key: "commentOptOffensiveOverDefensive" },
+                     { value: "BuildKrouOffensive", key: "commentOptBuildKrouOffensive" },
+                     { value: "BuildKrouDefensive", key: "commentOptBuildKrouDefensive" },
+                     { value: "BlockOpponentKrou", key: "commentOptBlockOpponentKrou" },
+                     { value: "BuildTwoKrous", key: "commentOptBuildTwoKrous" },
+                     { value: "MultiCaptureLimit3", key: "commentOptMultiCaptureLimit3" },
+                     { value: "MultiCaptureMax5", key: "commentOptMultiCaptureMax5" },
+                     { value: "SpeedUpGame", key: "commentOptSpeedUpGame" },
+                     { value: "SlowDownGame", key: "commentOptSlowDownGame" },
+                     { value: "TechnicalSelectionError", key: "commentOptTechnicalSelectionError" },
+                 ];
+
+                 commentOptions.forEach(option => {
+                     const spanElement = document.querySelector(`input[name="comment-option"][value="${option.value}"] + .checkbox-label-text`);
+                     if (spanElement && t[option.key]) {
+                         spanElement.textContent = t[option.key];
+                     } else if (spanElement) {
+                         // Fallback if translation is missing for the key, keep the default HTML text or show value
+                         console.warn(`Translation missing for comment option key: ${option.key} in language: ${currentLanguage}`);
                      }
-                 };
-                 setCheckboxLabel("NoSeedsBC", "commentOptionNoSeedsBC");
-                 setCheckboxLabel("OffensiveCapture", "commentOptionOffensiveCapture");
-                 setCheckboxLabel("BuildKrouOffensive", "commentOptionBuildKrouOffensive");
-                 setCheckboxLabel("BuildKrouDefensive", "commentOptionBuildKrouDefensive");
-                 setCheckboxLabel("BlockCounterKrou", "commentOptionBlockCounterKrou");
-                 setCheckboxLabel("Build2Krous", "commentOptionBuild2Krous");
-                 setCheckboxLabel("CaptureLimit3", "commentOptionCaptureLimit3");
-                 setCheckboxLabel("CaptureMax5", "commentOptionCaptureMax5");
-                 setCheckboxLabel("Accelerate", "commentOptionAccelerate");
-                 setCheckboxLabel("SlowDown", "commentOptionSlowDown");
-                 setCheckboxLabel("TechErrorSelect", "commentOptionTechErrorSelect");
-                 // --- FIN MODIFICATION CHECKBOX LABELS ---
+                 });
+                 // --- END: Update new comment checkbox labels ---
 
                 // Premium Modal (only if open, otherwise use function)
                 if (document.getElementById('premium-info-modal').style.display === 'block') {
@@ -1060,7 +1074,7 @@
             }
         }
 
-        // --- Fonction de Rendu Plateau ---
+        // --- Fonction de Rendu Plateau (Identique à la version précédente) ---
         function renderBoard() {
             const t = translations[currentLanguage] || translations.en;
             try {
@@ -1087,7 +1101,6 @@
 
                 clearTimeout(animationTimeout);
 
-                // Calculate Visual Aids
                 let capturedOpponentHolesIndices = [];
                 let pressuredOpponentHolesIndices = [];
                 let threatenedPlayer1HolesIndices = [];
@@ -1095,11 +1108,10 @@
                     if (selectedBetCode) {
                         const selectedIndex = holeMap[selectedBetCode];
                         if (selectedIndex !== undefined && board.player1[selectedIndex] > 0) {
-                            const simResultP1 = simulateMove(selectedBetCode, { currentBoard: board, currentScores: scores }); // Pass current state
+                            const simResultP1 = simulateMove(selectedBetCode, { currentBoard: board, currentScores: scores });
                             if (simResultP1 && !simResultP1.error && Array.isArray(simResultP1.capturedHoles)) {
                                 capturedOpponentHolesIndices = simResultP1.capturedHoles.filter(h => h.player === 2).map(h => h.index);
                                 if (capturedOpponentHolesIndices.length === 0) {
-                                    // Pass the *result* of the simulation to analyze pressure
                                     pressuredOpponentHolesIndices = analyzeFuturePressure(simResultP1.board, simResultP1.scores);
                                 }
                             }
@@ -1108,7 +1120,7 @@
                     opponentHoleCodes.forEach((opponentMoveCode) => {
                         const opponentHoleIndex = holeMap[opponentMoveCode];
                         if (opponentHoleIndex !== undefined && board.player2[opponentHoleIndex] > 0) {
-                             const simResultP2 = simulateMove(opponentMoveCode, { currentBoard: board, currentScores: scores }); // Pass current state
+                             const simResultP2 = simulateMove(opponentMoveCode, { currentBoard: board, currentScores: scores });
                              if (simResultP2 && !simResultP2.error && Array.isArray(simResultP2.capturedHoles)) {
                                  const capturedP1Holes = simResultP2.capturedHoles.filter(h => h.player === 1).map(h => h.index);
                                  capturedP1Holes.forEach(threatIndex => {
@@ -1121,7 +1133,6 @@
                     });
                 }
 
-                 // Update Turn Indicator
                  const turnIndicator = document.getElementById('turn-indicator');
                  if (turnIndicator) {
                      if (isCurrentlyGameOver) {
@@ -1133,7 +1144,6 @@
                      }
                  }
 
-                // Render Player 1 Row
                 board.player1.forEach((seeds, index) => {
                     const hole = document.createElement('div');
                     const holeCode = playerHoleCodes[index];
@@ -1144,11 +1154,16 @@
                     const isClickable = isPlayer1Turn && seeds > 0;
                     if (isClickable) {
                         hole.classList.add('clickable');
-                        hole.addEventListener('click', () => { if (betInput) betInput.value = holeCode; renderBoard(); });
+                        hole.addEventListener('click', () => {
+                            if (betInput) betInput.value = holeCode;
+                            renderBoard();
+                        });
                     } else if (isPlayer1Turn && seeds === 0) {
-                         hole.classList.add('disabled'); hole.addEventListener('click', () => showTemporaryMessage(t.emptyHoleMessage));
+                         hole.classList.add('disabled');
+                         hole.addEventListener('click', () => showTemporaryMessage(t.emptyHoleMessage));
                     } else if (!isPlayer1Turn) {
-                        hole.classList.add('disabled'); hole.addEventListener('click', () => showTemporaryMessage(t.opponentTurnMessage));
+                        hole.classList.add('disabled');
+                        hole.addEventListener('click', () => showTemporaryMessage(t.opponentTurnMessage));
                     }
 
                     if (holeCode === selectedBetCode && isPlayer1Turn) hole.classList.add('selected-bet');
@@ -1160,7 +1175,6 @@
                     player1Row.appendChild(hole);
                 });
 
-                // Render Player 2 Row
                 const reversedPlayer2 = [...board.player2].reverse();
                 reversedPlayer2.forEach((seeds, visualIndex) => {
                     const actualIndex = 5 - visualIndex;
@@ -1168,24 +1182,29 @@
                     const hole = document.createElement('div');
                     hole.className = 'hole player2-hole';
                     hole.textContent = seeds;
-                    hole.dataset.index = actualIndex; hole.dataset.code = holeCode;
+                    hole.dataset.index = actualIndex;
+                    hole.dataset.code = holeCode;
+
                     addLongPressListenerForSecrets(hole, actualIndex);
+
                     if (isPremium && areAidesEnabled && isPlayer1Turn) {
-                        if (capturedOpponentHolesIndices.includes(actualIndex)) hole.classList.add('highlight-capture-enabled');
-                        else if (pressuredOpponentHolesIndices.includes(actualIndex)) hole.classList.add('highlight-pressure-enabled');
+                        if (capturedOpponentHolesIndices.includes(actualIndex)) {
+                            hole.classList.add('highlight-capture-enabled');
+                        } else if (pressuredOpponentHolesIndices.includes(actualIndex)) {
+                            hole.classList.add('highlight-pressure-enabled');
+                        }
                     }
+
                     if (highlightStartHole?.player === 2 && highlightStartHole?.index === actualIndex) hole.classList.add('highlight-start');
                     if (highlightEndHole?.player === 2 && highlightEndHole?.index === actualIndex) hole.classList.add('highlight-end');
                     player2Row.appendChild(hole);
                 });
 
-                 // Show/hide premium buttons
                  const recordBtn = document.getElementById('record-btn');
                  const historyBtn = document.getElementById('history-btn');
                  if(recordBtn) recordBtn.style.display = isPremium ? 'inline-block' : 'none';
                  if(historyBtn) historyBtn.style.display = isPremium ? 'inline-block' : 'none';
 
-                 // Update Info Displays
                 const moveInfoEl = document.getElementById('move-info');
                 if (moveInfoEl) moveInfoEl.textContent = t.moveInfo(scores.player1, scores.player2);
                 const betPotInfoEl = document.getElementById('bet-pot-info');
@@ -1201,33 +1220,45 @@
                      playedMovesEl.textContent = t.playedMoves(currentMoveIndex + 1, currentGame.length, movesToShow);
                  }
 
-                 // Manage Button Visibility and Game Over State
                 const betButton = document.getElementById('bet-and-verify-btn');
                 const nextButton = document.getElementById('next-btn');
                 const resultEl = document.getElementById('result');
 
                 if (betButton && nextButton && resultEl) {
                     if (isCurrentlyGameOver) {
-                        betButton.style.display = 'none'; nextButton.style.display = 'none';
+                        betButton.style.display = 'none';
+                        nextButton.style.display = 'none';
+
                          if (!resultEl.textContent.includes(t.resultWin) && !resultEl.textContent.includes(t.resultLose) && resultEl.style.color !== 'rgb(23, 162, 184)') {
-                                if (resultEl.textContent !== t.resultGameOver) { resultEl.textContent = t.resultGameOver; resultEl.style.color = '#ff0000'; }
+                                if (!resultEl.textContent.startsWith(t.resultGameOver)) {
+                                    resultEl.textContent = t.resultGameOver;
+                                    resultEl.style.color = '#ff0000';
+                                }
                          }
+
                         if (totalPlayer1Bets > 0 && successfulBets === totalPlayer1Bets && pot > 100 && !isGameOver.confettiShown) {
-                             perfectGamesCount++; rainConfetti(); isGameOver.confettiShown = true;
+                             perfectGamesCount++;
+                             rainConfetti();
+                             isGameOver.confettiShown = true;
                              const messages = t.encouragingMessages || translations.en.encouragingMessages;
                              const messageIndex = Math.min(perfectGamesCount - 1, messages.length - 1);
                              setTimeout(() => {
                                  const resEl = document.getElementById('result');
-                                 if (resEl && resEl.textContent.startsWith(t.resultGameOver)) { resEl.textContent = t.resultGameOver + " " + messages[messageIndex]; resEl.style.color = '#008000'; }
+                                 if (resEl && resEl.textContent.startsWith(t.resultGameOver)) {
+                                     resEl.textContent = t.resultGameOver + " " + messages[messageIndex];
+                                     resEl.style.color = '#008000';
+                                 }
                              }, 2500);
                         }
-                         if (currentGameRecord.startTime && !currentGameRecord.endTime) { finalizeGameRecord(); }
                     } else {
                         betButton.style.display = isPlayer1Turn ? 'inline-block' : 'none';
                         nextButton.style.display = isPlayer1Turn ? 'none' : 'inline-block';
-                        if (resultEl.textContent === t.resultGameOver) { resultEl.textContent = ""; }
+                        if (resultEl.textContent.startsWith(t.resultGameOver)) {
+                            resultEl.textContent = "";
+                        }
                     }
                 }
+
                 if (betInput) { betInput.onchange = () => renderBoard(); }
                 applyCrossVisibility();
 
@@ -1240,53 +1271,51 @@
              }
         }
 
-        // --- Fonctions Logiques (Avec simulateMove corrigé) ---
 
-        // ========================================================================
-        // ===      simulateMove (Version CLARIFIÉE: ne modifie PAS l'état global) ===
-        // ========================================================================
+        // --- Fonctions Logiques (Identiques à la version précédente) ---
         function simulateMove(moveCode, options = {}) {
             const { currentBoard = board, currentScores = scores } = options;
             let tempBoard, tempScores;
             const t = translations[currentLanguage] || translations.en;
-
             try {
                 tempBoard = JSON.parse(JSON.stringify(currentBoard));
                 tempScores = JSON.parse(JSON.stringify(currentScores));
-
                  if (!tempBoard?.player1 || !tempBoard?.player2 || !tempScores ||
-                     !Array.isArray(tempBoard.player1) || !Array.isArray(tempBoard.player2) ||
+                     !Array.isArray(tempBoard.player1) || !tempBoard.player1.length === 6 ||
+                     !Array.isArray(tempBoard.player2) || !tempBoard.player2.length === 6 ||
                      typeof tempScores.player1 !== 'number' || typeof tempScores.player2 !== 'number') {
                       console.error("Invalid board/scores structure provided to simulateMove", currentBoard, currentScores);
                       const safeBoard = initialBoard(); const safeScores = initialScores();
                       return { board: safeBoard, scores: safeScores, startHole: null, endHole: null, captured: 0, capturedHoles: [], error: true };
                  }
-
                 const isPlayer1 = /[A-F]/.test(moveCode);
                 const playerBoard = isPlayer1 ? tempBoard.player1 : tempBoard.player2;
+                const opponentBoard = isPlayer1 ? tempBoard.player2 : tempBoard.player1;
                 const holeIndex = holeMap[moveCode];
-
                 if (holeIndex === undefined || holeIndex < 0 || holeIndex > 5 || !playerBoard || playerBoard[holeIndex] === undefined || playerBoard[holeIndex] <= 0) {
                     console.warn(`SimulateMove invalid start: ${moveCode} from hole ${holeIndex} with ${playerBoard ? playerBoard[holeIndex] : 'N/A'} seeds.`);
-                    return { board: JSON.parse(JSON.stringify(currentBoard)), scores: JSON.parse(JSON.stringify(currentScores)), startHole: { player: isPlayer1 ? 1 : 2, index: holeIndex }, endHole: { player: isPlayer1 ? 1 : 2, index: holeIndex }, captured: 0, capturedHoles: [], error: true };
+                     return { board: JSON.parse(JSON.stringify(currentBoard)), scores: JSON.parse(JSON.stringify(currentScores)), startHole: { player: isPlayer1 ? 1 : 2, index: holeIndex }, endHole: { player: isPlayer1 ? 1 : 2, index: holeIndex }, captured: 0, capturedHoles: [], error: true };
                 }
-
                 const startHole = { player: isPlayer1 ? 1 : 2, index: holeIndex };
                 let seeds = playerBoard[holeIndex];
                 playerBoard[holeIndex] = 0;
-
                 let currentPlayer = isPlayer1 ? 1 : 2;
                 let currentHole = holeIndex;
                 let seedsToDistribute = seeds;
                 let lastHole = null;
-
                  while (seedsToDistribute > 0) {
                     if (currentPlayer === 1) {
                         currentHole++;
-                        if (currentHole > 5) { currentPlayer = 2; currentHole = 0; }
+                        if (currentHole > 5) {
+                            currentPlayer = 2;
+                            currentHole = 0;
+                        }
                     } else {
                         currentHole++;
-                        if (currentHole > 5) { currentPlayer = 1; currentHole = 0; }
+                        if (currentHole > 5) {
+                            currentPlayer = 1;
+                            currentHole = 0;
+                        }
                     }
                     const isStartingHole = (isPlayer1 && currentPlayer === 1 && currentHole === holeIndex) || (!isPlayer1 && currentPlayer === 2 && currentHole === holeIndex);
                     if (!(seeds >= 12 && isStartingHole)) {
@@ -1294,21 +1323,20 @@
                         else tempBoard.player2[currentHole]++;
                         seedsToDistribute--;
                     }
-                    if (seedsToDistribute === 0) lastHole = { player: currentPlayer, index: currentHole };
+                    if (seedsToDistribute === 0) {
+                        lastHole = { player: currentPlayer, index: currentHole };
+                    }
                 }
                 const endHole = lastHole || startHole;
-
                 let capturedSeedsTotal = 0;
                 let capturedHolesPath = [];
                 const landedPlayer = lastHole ? lastHole.player : (isPlayer1 ? 1 : 2);
                 const landedHoleIndex = lastHole ? lastHole.index : holeIndex;
-
-                 if (lastHole && ((isPlayer1 && landedPlayer === 2) || (!isPlayer1 && landedPlayer === 1)))
+                if (lastHole && ((isPlayer1 && landedPlayer === 2) || (!isPlayer1 && landedPlayer === 1)))
                 {
                     let newBoardForCheck = JSON.parse(JSON.stringify(tempBoard));
                     let tempCapturedInLoop = 0;
                     let currentCapturePathDetails = [];
-
                     if (isPlayer1 && landedPlayer === 2) {
                         let capturePos = landedHoleIndex;
                         while (capturePos >= 0 && (tempBoard.player2[capturePos] === 2 || tempBoard.player2[capturePos] === 3)) {
@@ -1324,7 +1352,8 @@
                              capturedHolesPath.forEach(holeInfo => { tempBoard.player2[holeInfo.index] = 0; });
                              tempScores.player1 += capturedSeedsTotal;
                         }
-                    } else if (!isPlayer1 && landedPlayer === 1) {
+                    }
+                    else if (!isPlayer1 && landedPlayer === 1) {
                          let capturePos = landedHoleIndex;
                          while (capturePos >= 0 && (tempBoard.player1[capturePos] === 2 || tempBoard.player1[capturePos] === 3)) {
                              const seedsInHole = tempBoard.player1[capturePos];
@@ -1341,12 +1370,15 @@
                         }
                     }
                 }
-
                 return {
-                    board: tempBoard, scores: tempScores, startHole: startHole,
-                    endHole: endHole, captured: capturedSeedsTotal, capturedHoles: capturedHolesPath, error: false
+                    board: tempBoard,
+                    scores: tempScores,
+                    startHole: startHole,
+                    endHole: endHole,
+                    captured: capturedSeedsTotal,
+                    capturedHoles: capturedHolesPath,
+                    error: false
                 };
-
             } catch (error) {
                 console.error("Error during simulateMove:", error, moveCode, currentBoard);
                 showTemporaryMessage(t.internalErrorMessage);
@@ -1355,11 +1387,6 @@
                  return { board: safeBoard, scores: safeScores, startHole: null, endHole: null, captured: 0, capturedHoles: [], error: true };
             }
         }
-        // ========================================================================
-        // ===                 FIN de simulateMove CLARIFIÉE                    ===
-        // ========================================================================
-
-
         function analyzeFuturePressure(simulatedBoard, simulatedScores) {
              const pressurePoints = [];
              const opponentPlayer = 2;
@@ -1374,7 +1401,6 @@
                  const playerSeeds = simulatedBoard.player1[playerHoleIndex];
                  if (playerSeeds > 0) {
                      const potentialNextMoveCode = playerHoleCodes[playerHoleIndex];
-                     // Pass the simulated state for the next potential move check
                      const nextSimResult = simulateMove(potentialNextMoveCode, {
                          currentBoard: simulatedBoard,
                          currentScores: simulatedScores
@@ -1394,8 +1420,6 @@
              }
              return pressurePoints;
         }
-
-        // --- betAndVerify (Utilise simulateMove corrigé) ---
         function betAndVerify() {
              const t = translations[currentLanguage] || translations.en;
              const betInput = document.getElementById('bet-input');
@@ -1404,67 +1428,84 @@
              const betSelect = document.getElementById('bet-amount');
              if (!betSelect) return;
              let betPercentage = parseInt(betSelect.value);
-
-             if (isNaN(betPercentage) || betPercentage <= 0 || betPercentage > 100) { showTemporaryMessage(t.resultInvalidBet + " (%)"); return; }
+             if (isNaN(betPercentage) || betPercentage <= 0 || betPercentage > 100) {
+                 showTemporaryMessage(t.resultInvalidBet + " (%)");
+                 return;
+             }
              if (isNaN(pot)) pot = 100;
              betAmount = Math.max(0, Math.floor(pot * (betPercentage / 100)));
-             if ((betAmount <= 0 && pot > 0) || betAmount > pot) { showTemporaryMessage(t.resultInvalidBet + " (Amount/Funds)"); return; }
-             if (currentMoveIndex + 1 >= currentGame.length) { showTemporaryMessage(t.resultGameOver); return; }
+             if ((betAmount <= 0 && pot > 0) || betAmount > pot) {
+                 showTemporaryMessage(t.resultInvalidBet + " (Amount/Funds)");
+                 return;
+             }
+             if (currentMoveIndex + 1 >= currentGame.length) {
+                 showTemporaryMessage(t.resultGameOver);
+                 return;
+             }
              const nextMove = currentGame[currentMoveIndex + 1];
              const isPlayer1Next = /[A-F]/.test(nextMove);
-             if (!isPlayer1Next) { showTemporaryMessage(t.notYourTurnMessage); return; }
+             if (!isPlayer1Next) {
+                 showTemporaryMessage(t.notYourTurnMessage);
+                 return;
+             }
              const currentBetIndex = holeMap[currentBet];
-             if (currentBetIndex === undefined || !board?.player1 || board.player1[currentBetIndex] === undefined || board.player1[currentBetIndex] <= 0) { showTemporaryMessage(t.invalidHoleMessage); return; }
-
+             if (currentBetIndex === undefined || !board?.player1 || board.player1[currentBetIndex] === undefined || board.player1[currentBetIndex] <= 0) {
+                 showTemporaryMessage(t.invalidHoleMessage);
+                 return;
+             }
              document.getElementById('result').textContent = "";
              lastIncorrectGuess = null;
              lastCorrectMove = null;
-
              currentMoveIndex++;
              totalPlayer1Bets++;
              if (!Array.isArray(playedMoves)) playedMoves = [];
              playedMoves.push(nextMove);
-             if (totalPlayer1Bets === 1 && currentMoveIndex === 0) { startNewGameRecord(); }
-
+             if (totalPlayer1Bets === 1 && currentMoveIndex === 0) {
+                 startNewGameRecord();
+             }
              if (!Array.isArray(moveHistory)) moveHistory = [];
              moveHistory.push({
-                 board: JSON.parse(JSON.stringify(board)), scores: JSON.parse(JSON.stringify(scores)), moveCode: nextMove
+                 board: JSON.parse(JSON.stringify(board)),
+                 scores: JSON.parse(JSON.stringify(scores)),
+                 moveCode: nextMove
              });
-
-             // Simulate, passing current state explicitly
              const moveResult = simulateMove(nextMove, { currentBoard: board, currentScores: scores });
-
-              // Check for simulation error
               if (!moveResult || moveResult.error) {
-                  console.error("Simulation failed for the correct move:", nextMove);
+                  console.error("Simulation failed for the correct player move:", nextMove);
                   moveHistory.pop();
                   currentMoveIndex--;
                   totalPlayer1Bets--;
                   if (playedMoves.length > 0) playedMoves.pop();
                   showTemporaryMessage(t.internalErrorMessage);
-                  renderBoard(); // Render the state BEFORE the failed simulation
+                  renderBoard();
                   return;
               }
-
-              // Update GLOBAL state only if simulation succeeded
               board = moveResult.board;
               scores = moveResult.scores;
-
              triggerAnimation(moveResult.startHole, moveResult.endHole);
-
              const resultEl = document.getElementById('result');
              if (isSuccessGuaranteed || currentBet === nextMove) {
                  pot = Math.round(pot + betAmount);
                  successfulBets++;
-                 if (resultEl) { resultEl.textContent = t.resultWin; resultEl.style.color = '#008000'; }
+                 if (resultEl) {
+                     resultEl.textContent = t.resultWin;
+                     resultEl.style.color = '#008000';
+                 }
              } else {
                  pot = Math.max(0, Math.round(pot - betAmount));
-                 if (resultEl) { resultEl.textContent = `${t.resultLose} (${nextMove})`; resultEl.style.color = '#ff0000'; }
+                 if (resultEl) {
+                     resultEl.textContent = `${t.resultLose} (${nextMove})`;
+                     resultEl.style.color = '#ff0000';
+                 }
                  lastIncorrectGuess = currentBet;
                  lastCorrectMove = nextMove;
                  const errorData = {
-                      moveIndex: currentMoveIndex, bet: currentBet, correctMove: nextMove,
-                      potChange: -betAmount, betAmount: betAmount, timestamp: Date.now()
+                      moveIndex: currentMoveIndex,
+                      bet: currentBet,
+                      correctMove: nextMove,
+                      potChange: -betAmount,
+                      betAmount: betAmount,
+                      timestamp: Date.now()
                  };
                  if (!Array.isArray(errorLog)) errorLog = [];
                  errorLog.push(errorData);
@@ -1473,155 +1514,180 @@
                  }
              }
              setDefaultBet();
-             renderBoard(); // Render the NEW global state
+             renderBoard();
+             const isNowGameOver = currentMoveIndex + 1 >= currentGame.length;
+             if (isNowGameOver && currentGameRecord.startTime && !currentGameRecord.endTime) {
+                 console.log("Calling finalizeGameRecord from betAndVerify after game end.");
+                 finalizeGameRecord();
+             }
         }
-
-        // --- moveNext (Utilise simulateMove corrigé) ---
         function moveNext() {
              const t = translations[currentLanguage] || translations.en;
-             if (currentMoveIndex + 1 >= currentGame.length) { showTemporaryMessage(t.resultGameOver); return; }
+             if (currentMoveIndex + 1 >= currentGame.length) {
+                 showTemporaryMessage(t.resultGameOver);
+                 return;
+             }
              const nextMove = currentGame[currentMoveIndex + 1];
              const isPlayer1Next = /[A-F]/.test(nextMove);
-             if (isPlayer1Next) { showTemporaryMessage(t.playerTurnIndicator); return; }
-
+             if (isPlayer1Next) {
+                 showTemporaryMessage(t.playerTurnIndicator);
+                 return;
+             }
              document.getElementById('result').textContent = "";
              lastIncorrectGuess = null;
              lastCorrectMove = null;
-
              currentMoveIndex++;
              if (!Array.isArray(playedMoves)) playedMoves = [];
              playedMoves.push(nextMove);
-             if (currentMoveIndex === 0 && totalPlayer1Bets === 0) { startNewGameRecord(); }
-
-              if (!Array.isArray(moveHistory)) moveHistory = [];
+             if (currentMoveIndex === 0 && totalPlayer1Bets === 0) {
+                 startNewGameRecord();
+             }
+             if (!Array.isArray(moveHistory)) moveHistory = [];
              moveHistory.push({
-                 board: JSON.parse(JSON.stringify(board)), scores: JSON.parse(JSON.stringify(scores)), moveCode: nextMove
+                 board: JSON.parse(JSON.stringify(board)),
+                 scores: JSON.parse(JSON.stringify(scores)),
+                 moveCode: nextMove
              });
-
-              // Simulate, passing current state explicitly
               const moveResult = simulateMove(nextMove, { currentBoard: board, currentScores: scores });
-
-             // Check for simulation error
              if (!moveResult || moveResult.error) {
                   console.error("Simulation failed for opponent move:", nextMove);
                   moveHistory.pop();
                   currentMoveIndex--;
-                   if (playedMoves.length > 0) playedMoves.pop();
+                  if (playedMoves.length > 0) playedMoves.pop();
                   showTemporaryMessage(t.internalErrorMessage);
-                  renderBoard(); // Render the state BEFORE the failed simulation
+                  renderBoard();
                   return;
              }
-
-               // Update GLOBAL state only if simulation succeeded
                board = moveResult.board;
                scores = moveResult.scores;
-
              triggerAnimation(moveResult.startHole, moveResult.endHole);
              setDefaultBet();
-             renderBoard(); // Render the NEW global state
+             renderBoard();
+             const isNowGameOver = currentMoveIndex + 1 >= currentGame.length;
+             if (isNowGameOver && currentGameRecord.startTime && !currentGameRecord.endTime) {
+                 console.log("Calling finalizeGameRecord from moveNext after game end.");
+                 finalizeGameRecord();
+             }
         }
-
-        // --- triggerAnimation ---
         function triggerAnimation(startHole, endHole) {
              clearTimeout(animationTimeout);
              highlightStartHole = startHole;
              highlightEndHole = endHole;
-             renderBoard(); // Render immediately with highlights
+             renderBoard();
              animationTimeout = setTimeout(() => {
                  highlightStartHole = null;
                  highlightEndHole = null;
-                 renderBoard(); // Render again without highlights
+                 renderBoard();
              }, 800);
         }
 
-        // --- Fonctions Historique, Commentaires, Enregistrements (Modifiée saveComment) ---
+        // --- Fonctions Historique, Commentaires, Enregistrements (Identiques à la version précédente) ---
         function startNewGameRecord() {
-            if (currentGameRecord.startTime && !currentGameRecord.endTime) { finalizeGameRecord(); }
+            if (currentGameRecord.startTime && !currentGameRecord.endTime) {
+                console.log("Finalizing previous unfinished record before starting new one.");
+                finalizeGameRecord();
+            }
             gameStartTime = Date.now();
             const t = translations[currentLanguage] || translations.en;
             currentGameRecord = {
                 gameId: `game-${currentGameIndex + 1}-${gameStartTime}`,
                 gameName: t.gameDropdownFormat(currentGameIndex + 1, currentGame.length),
-                totalMoves: currentGame.length, startTime: gameStartTime, endTime: null,
-                duration: 0, successRate: 0, finalPot: pot, comments: [], errors: []
+                totalMoves: currentGame.length,
+                startTime: gameStartTime,
+                endTime: null,
+                duration: 0,
+                successRate: 0,
+                finalPot: pot,
+                comments: [],
+                errors: []
             };
             errorLog = [];
             console.log("Started new game record:", currentGameRecord.gameId);
         }
         function finalizeGameRecord() {
-            if (!currentGameRecord || !currentGameRecord.startTime || currentGameRecord.endTime) { return; }
+            if (!currentGameRecord || !currentGameRecord.startTime || currentGameRecord.endTime) {
+                 console.log("Skipping finalizeGameRecord: No active/unfinished record.");
+                 if(currentGameRecord && !currentGameRecord.startTime) currentGameRecord = {};
+                return;
+            }
             console.log("Finalizing game record:", currentGameRecord.gameId);
             currentGameRecord.endTime = Date.now();
             currentGameRecord.duration = Math.round((currentGameRecord.endTime - currentGameRecord.startTime) / 1000);
             currentGameRecord.successRate = totalPlayer1Bets === 0 ? 0 : Math.round((successfulBets / totalPlayer1Bets) * 100);
             currentGameRecord.finalPot = pot;
             currentGameRecord.errors = [...errorLog];
-
             const existingIndex = gameRecords.findIndex(r => r.gameId === currentGameRecord.gameId);
-            if (existingIndex > -1) { gameRecords[existingIndex] = { ...currentGameRecord }; console.log("Updated existing game record:", currentGameRecord.gameId); }
-            else { gameRecords.push({ ...currentGameRecord }); console.log("Added new game record:", currentGameRecord.gameId); }
+            if (existingIndex > -1) {
+                gameRecords[existingIndex] = { ...currentGameRecord };
+                console.log("Updated existing game record:", currentGameRecord.gameId);
+            } else {
+                gameRecords.push({ ...currentGameRecord });
+                console.log("Added new game record:", currentGameRecord.gameId);
+            }
             saveGameRecords();
-            currentGameRecord = {}; gameStartTime = null; errorLog = [];
+            currentGameRecord = {};
+            gameStartTime = null;
+            errorLog = [];
+            console.log("Game record finalized and saved.");
         }
         function restartGame() {
             finalizeGameRecord();
-            board = initialBoard(); scores = initialScores(); currentMoveIndex = -1;
+            board = initialBoard();
+            scores = initialScores();
+            currentMoveIndex = -1;
             moveHistory = [{ board: JSON.parse(JSON.stringify(board)), scores: JSON.parse(JSON.stringify(scores)), moveCode: null }];
-            currentBet = null; playedMoves = []; pot = 100; successfulBets = 0; totalPlayer1Bets = 0;
-            errorLog = []; gameStartTime = null; currentGameRecord = {};
-            lastIncorrectGuess = null; lastCorrectMove = null; highlightStartHole = null; highlightEndHole = null;
-            clearTimeout(animationTimeout); isGameOver.confettiShown = false;
-            const resultEl = document.getElementById('result'); if (resultEl) resultEl.textContent = "";
-            const secretMsgEl = document.getElementById('secret-message'); if (secretMsgEl) secretMsgEl.textContent = "";
+            currentBet = null;
+            playedMoves = [];
+            pot = 100;
+            successfulBets = 0;
+            totalPlayer1Bets = 0;
+            errorLog = [];
+            gameStartTime = null;
+            currentGameRecord = {};
+            lastIncorrectGuess = null;
+            lastCorrectMove = null;
+            highlightStartHole = null;
+            highlightEndHole = null;
+            clearTimeout(animationTimeout);
+            isGameOver.confettiShown = false;
+            const resultEl = document.getElementById('result');
+            if (resultEl) resultEl.textContent = "";
+            const secretMsgEl = document.getElementById('secret-message');
+            if (secretMsgEl) secretMsgEl.textContent = "";
             setDefaultBet();
-             if (games[currentGameIndex]) { currentGame = games[currentGameIndex].split(''); }
-             else {
+             if (games[currentGameIndex]) {
+                 currentGame = games[currentGameIndex].split('');
+             } else {
                  console.error(`Game index ${currentGameIndex} invalid after restart. Defaulting to 0.`);
-                 currentGameIndex = 0; currentGame = games[0] ? games[0].split('') : [];
-                 const levelSelect = document.getElementById('level-select'); if(levelSelect) levelSelect.value = 0;
+                 currentGameIndex = 0;
+                 currentGame = games[0] ? games[0].split('') : [];
+                 const levelSelect = document.getElementById('level-select');
+                 if(levelSelect) levelSelect.value = 0;
              }
             renderBoard();
+            console.log("Game restarted. Level:", currentGameIndex + 1);
         }
         function openCommentModal() {
             if (!isPremium) { showPremiumInfoModal(); return; }
             const modal = document.getElementById('comment-modal'); if (modal) modal.style.display = 'block';
             const commentInput = document.getElementById('comment-input'); if (commentInput) commentInput.value = '';
             document.querySelectorAll('input[name="comment-option"]').forEach(checkbox => checkbox.checked = false);
+             // Make sure labels are in the correct language when opening
+             updateLanguage(); // Re-run to ensure comment labels are translated
         }
-
-        // --- MODIFICATION: saveComment to use new options ---
         function saveComment() {
              if (!currentGameRecord || !currentGameRecord.startTime) {
                  console.warn("Cannot save comment: No active game record.");
                  closeModal('comment-modal');
                  return;
              }
-             const t = translations[currentLanguage] || translations.en;
              const commentInput = document.getElementById('comment-input');
              const checkboxes = document.querySelectorAll('input[name="comment-option"]:checked');
              let commentText = commentInput ? commentInput.value.trim() : '';
-
-             // Map checkbox values to their corresponding translation keys
-             const valueToTranslationKeyMap = {
-                 "NoSeedsBC": "commentOptionNoSeedsBC",
-                 "OffensiveCapture": "commentOptionOffensiveCapture",
-                 "BuildKrouOffensive": "commentOptionBuildKrouOffensive",
-                 "BuildKrouDefensive": "commentOptionBuildKrouDefensive",
-                 "BlockCounterKrou": "commentOptionBlockCounterKrou",
-                 "Build2Krous": "commentOptionBuild2Krous",
-                 "CaptureLimit3": "commentOptionCaptureLimit3",
-                 "CaptureMax5": "commentOptionCaptureMax5",
-                 "Accelerate": "commentOptionAccelerate",
-                 "SlowDown": "commentOptionSlowDown",
-                 "TechErrorSelect": "commentOptionTechErrorSelect"
-             };
-
              const checkedOptions = Array.from(checkboxes).map(checkbox => {
-                 const translationKey = valueToTranslationKeyMap[checkbox.value];
-                 // Return the translated text if found, otherwise fallback to the value
-                 return t[translationKey] || checkbox.value;
+                 const labelSpan = checkbox.nextElementSibling;
+                 return labelSpan ? labelSpan.textContent.trim() : checkbox.value;
              });
-
              if (commentText || checkedOptions.length > 0) {
                  const moveIndexForLabel = currentMoveIndex >= 0 ? currentMoveIndex + 1 : 0;
                  const moveLabel = moveIndexForLabel > 0 ? `${moveIndexForLabel}/${currentGame.length}` : "Start";
@@ -1633,17 +1699,14 @@
                      text: commentText,
                      options: checkedOptions
                  };
-
                  if (!Array.isArray(currentGameRecord.comments)) {
                      currentGameRecord.comments = [];
                  }
                  currentGameRecord.comments.push(fullComment);
-                 console.log("Comment saved:", fullComment);
+                 console.log("Comment saved for move:", moveLabel);
              }
              closeModal('comment-modal');
         }
-        // --- FIN MODIFICATION saveComment ---
-
         function openHistoryModal() {
              if (!isPremium) { showPremiumInfoModal(); return; }
              const t = translations[currentLanguage] || translations.en;
@@ -1653,45 +1716,75 @@
              historyContent.innerHTML = '';
              const tempRecords = [...gameRecords];
              if (currentGameRecord && currentGameRecord.startTime && !currentGameRecord.endTime) {
-                 const currentSnapshot = { ...currentGameRecord, endTime: Date.now(), duration: Math.round((Date.now() - currentGameRecord.startTime) / 1000), finalPot: pot, successRate: totalPlayer1Bets === 0 ? 0 : Math.round((successfulBets / totalPlayer1Bets) * 100), errors: [...errorLog], comments: [...(currentGameRecord.comments || [])], isInProgress: true };
+                 const currentSnapshot = {
+                     ...currentGameRecord,
+                     endTime: Date.now(),
+                     duration: Math.round((Date.now() - currentGameRecord.startTime) / 1000),
+                     finalPot: pot,
+                     successRate: totalPlayer1Bets === 0 ? 0 : Math.round((successfulBets / totalPlayer1Bets) * 100),
+                     errors: [...errorLog],
+                     comments: [...(currentGameRecord.comments || [])],
+                     isInProgress: true
+                 };
                  tempRecords.push(currentSnapshot);
              }
              tempRecords.sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
-             if (tempRecords.length === 0) { historyContent.textContent = t.noHistory; }
-             else {
+             if (tempRecords.length === 0) {
+                 historyContent.textContent = t.noHistory;
+             } else {
                  tempRecords.forEach(record => {
                       if (!record || !record.startTime) return;
-                     const entryDetails = document.createElement('details'); entryDetails.className = 'history-entry';
-                     const entrySummary = document.createElement('summary'); entrySummary.className = 'history-summary';
+                     const entryDetails = document.createElement('details');
+                     entryDetails.className = 'history-entry';
+                     const entrySummary = document.createElement('summary');
+                     entrySummary.className = 'history-summary';
                      const gameDate = new Date(record.startTime).toLocaleString(currentLanguage, { dateStyle: 'short', timeStyle: 'short' });
                      const titleText = t.historyRecordTitle(record.gameName || `Game ID ${record.gameId}`, gameDate);
                      const statsText = t.historyStats(record.successRate ?? 0, record.finalPot ?? 0, record.duration ?? 0);
                      const inProgressText = record.isInProgress ? ` <em style="color: #007bff;font-size:0.9em;">${t.historyInProgress}</em>` : '';
                      entrySummary.innerHTML = `<span style="flex-grow: 1;">${titleText} <span style="font-weight:normal; font-size:0.9em;">(${statsText})</span></span>${inProgressText}`;
                      entryDetails.appendChild(entrySummary);
-                     const detailsDiv = document.createElement('div'); detailsDiv.className = 'history-details';
-                     const commentsTitle = document.createElement('h4'); commentsTitle.textContent = t.historyCommentsTitle; detailsDiv.appendChild(commentsTitle);
+                     const detailsDiv = document.createElement('div');
+                     detailsDiv.className = 'history-details';
+                     const commentsTitle = document.createElement('h4');
+                     commentsTitle.textContent = t.historyCommentsTitle;
+                     detailsDiv.appendChild(commentsTitle);
                      if (record.comments && record.comments.length > 0) {
                          record.comments.forEach(comment => {
-                             const commentP = document.createElement('p'); commentP.className = 'comment-entry';
+                             const commentP = document.createElement('p');
+                             commentP.className = 'comment-entry';
                              const commentDate = new Date(comment.timestamp).toLocaleTimeString(currentLanguage, { timeStyle: 'short' });
                              let optionsText = comment.options && comment.options.length > 0 ? ` [${comment.options.join(', ')}]` : '';
                              const moveLabel = t.historyMoveLabel;
                              commentP.innerHTML = `<strong>${moveLabel} ${comment.move || '?'} (${comment.moveCode || 'N/A'}):</strong> ${comment.text || ''}<span class="comment-options">${optionsText}</span> <small>(${commentDate})</small>`;
                              detailsDiv.appendChild(commentP);
                          });
-                     } else { const noCommentP = document.createElement('p'); noCommentP.textContent = t.historyNoComments; noCommentP.style.fontStyle = 'italic'; detailsDiv.appendChild(noCommentP); }
-                     const errorsTitle = document.createElement('h4'); errorsTitle.textContent = t.historyErrorsTitle; errorsTitle.style.marginTop = '15px'; detailsDiv.appendChild(errorsTitle);
+                     } else {
+                         const noCommentP = document.createElement('p');
+                         noCommentP.textContent = t.historyNoComments;
+                         noCommentP.style.fontStyle = 'italic';
+                         detailsDiv.appendChild(noCommentP);
+                     }
+                     const errorsTitle = document.createElement('h4');
+                     errorsTitle.textContent = t.historyErrorsTitle;
+                     errorsTitle.style.marginTop = '15px';
+                     detailsDiv.appendChild(errorsTitle);
                      if (record.errors && record.errors.length > 0) {
                          record.errors.forEach(error => {
-                             const errorP = document.createElement('p'); errorP.className = 'error-entry';
+                             const errorP = document.createElement('p');
+                             errorP.className = 'error-entry';
                              const errorDate = new Date(error.timestamp).toLocaleTimeString(currentLanguage, { timeStyle: 'short' });
                               const moveLabel = t.historyMoveLabel;
                               const errorMoveNumber = (typeof error.moveIndex === 'number' && error.moveIndex >= 0) ? error.moveIndex + 1 : '?';
                               errorP.innerHTML = `<strong>${moveLabel} ${errorMoveNumber}:</strong> ${t.historyBetErrorLabel(error.bet, error.correctMove, error.potChange, errorDate)}`;
                              detailsDiv.appendChild(errorP);
                          });
-                     } else { const noErrorP = document.createElement('p'); noErrorP.textContent = t.historyNoErrors; noErrorP.style.fontStyle = 'italic'; detailsDiv.appendChild(noErrorP); }
+                     } else {
+                         const noErrorP = document.createElement('p');
+                         noErrorP.textContent = t.historyNoErrors;
+                         noErrorP.style.fontStyle = 'italic';
+                         detailsDiv.appendChild(noErrorP);
+                     }
                      entryDetails.appendChild(detailsDiv);
                      historyContent.appendChild(entryDetails);
                  });
@@ -1702,24 +1795,39 @@
              const t = translations[currentLanguage] || translations.en;
              try {
                  const dynamicPromptMap = {
-                     fr: `Vous êtes un expert Awalé et coach stratégique spécialisé dans l'analyse des parties de champions. Voici l'historique des parties jouées par un utilisateur essayant de deviner le coup du champion. Analysez ses performances, ses erreurs courantes (le tableau 'errors' montre son pari incorrect par rapport au coup correct), ses points forts et ses commentaires. Fournissez des commentaires constructifs et des conseils de coaching pour l'aider à améliorer sa capacité à penser comme le champion.\nIMPORTANT : Veuillez formuler votre réponse exclusivement dans la langue suivante : Français.`,
-                     en: `You are an Awale expert and strategic coach specialized in analyzing champion games. Here is the history of games played by a user trying to guess the champion's move. Analyze their performance, common mistakes (the 'errors' array shows their incorrect bet vs the correct move), strengths, and comments. Provide constructive feedback and coaching tips to help them improve their ability to think like the champion.\nIMPORTANT: Please formulate your response exclusively in the following language: English.`,
-                     es: `Eres un experto en Awalé y entrenador estratégico especializado en analizar partidas de campeones. Aquí tienes el historial de partidas jugadas por un usuario que intenta adivinar la jugada del campeón. Analiza su rendimiento, errores comunes (la matriz 'errors' muestra su apuesta incorrecta frente a la jugada correcta), puntos fuertes y comentarios. Proporciona comentarios constructivos y consejos de coaching para ayudarle a mejorar su capacidad de pensar como el campeón.\nIMPORTANTE: Por favor, formula tu respuesta exclusivamente en el siguiente idioma: Español.`,
-                     ru: `Вы эксперт по Авале и стратегический тренер, специализирующийся на анализе игр чемпионов. Вот история игр, сыгранных пользователем, пытающимся угадать ход чемпиона. Проанализируйте его результаты, распространенные ошибки (массив 'errors' показывает его неправильную ставку по сравнению с правильным ходом), сильные стороны и комментарии. Предоставьте конструктивную обратную связь и тренерские советы, чтобы помочь ему улучшить способность думать как чемпион.\nВАЖНО: Пожалуйста, формулируйте свой ответ исключительно на следующем языке: Русский.`,
-                     zh: `您是一位 Awale 专家和战略教练，专门分析冠军棋局。这是一位试图猜测冠军走法的用户的下棋历史记录。请分析他们的表现、常见错误（'errors' 数组显示了他们错误的下注与正确走法）、优点和评论。提供建设性的反馈和指导技巧，帮助他们提高像冠军一样思考的能力。\n重要提示：请仅使用以下语言制定您的回复：中文。`
+                     fr: `Vous êtes un expert Awalé et coach stratégique spécialisé dans l'analyse des parties de champions. Voici l'historique des parties jouées par un utilisateur essayant de deviner le coup du champion. Analysez ses performances, ses erreurs courantes (le tableau 'errors' montre son pari incorrect par rapport au coup correct), ses points forts et ses commentaires (le tableau 'comments' contient des notes utilisateur avec potentiellement des options cochées comme 'Accélérer le jeu', 'Bloquer le Contre-Krou Adverse', etc.). Fournissez des commentaires constructifs et des conseils de coaching pour l'aider à améliorer sa capacité à penser comme le champion.\nIMPORTANT : Veuillez formuler votre réponse exclusivement dans la langue suivante : Français.`,
+                     en: `You are an Awale expert and strategic coach specialized in analyzing champion games. Here is the history of games played by a user trying to guess the champion's move. Analyze their performance, common mistakes (the 'errors' array shows their incorrect bet vs the correct move), strengths, and comments (the 'comments' array contains user notes, potentially with checked options like 'Accélérer le jeu' [Speed up game], 'Bloquer le Contre-Krou Adverse' [Block Opponent Krou], etc.). Provide constructive feedback and coaching tips to help them improve their ability to think like the champion.\nIMPORTANT: Please formulate your response exclusively in the following language: English.`,
+                     es: `Eres un experto en Awalé y entrenador estratégico especializado en analizar partidas de campeones. Aquí tienes el historial de partidas jugadas por un usuario que intenta adivinar la jugada del campeón. Analiza su rendimiento, errores comunes (la matriz 'errors' muestra su apuesta incorrecta frente a la jugada correcta), puntos fuertes y comentarios (la matriz 'comments' contiene notas del usuario, potencialmente con opciones marcadas como 'Accélérer le jeu' [Acelerar el juego], 'Bloquer le Contre-Krou Adverse' [Bloquear Contra-Krou Adversario], etc.). Proporciona comentarios constructivos y consejos de coaching para ayudarle a mejorar su capacidad de pensar como el campeón.\nIMPORTANTE: Por favor, formula tu respuesta exclusivamente en el siguiente idioma: Español.`,
+                     ru: `Вы эксперт по Авале и стратегический тренер, специализирующийся на анализе игр чемпионов. Вот история игр, сыгранных пользователем, пытающимся угадать ход чемпиона. Проанализируйте его результаты, распространенные ошибки (массив 'errors' показывает его неправильную ставку по сравнению с правильным ходом), сильные стороны и комментарии (массив 'comments' содержит заметки пользователя, возможно, с отмеченными опциями, такими как 'Accélérer le jeu' [Ускорить игру], 'Bloquer le Contre-Krou Adverse' [Блокировать Контр-Кру противника] и т.д.). Предоставьте конструктивную обратную связь и тренерские советы, чтобы помочь ему улучшить способность думать как чемпион.\nВАЖНО: Пожалуйста, формулируйте свой ответ исключительно на следующем языке: Русский.`,
+                     zh: `您是一位 Awale 专家和战略教练，专门分析冠军棋局。这是一位试图猜测冠军走法的用户的下棋历史记录。请分析他们的表现、常见错误（'errors' 数组显示了他们错误的下注与正确走法）、优点和评论（'comments' 数组包含用户笔记，可能带有选中的选项，例如 'Accélérer le jeu' [加快游戏]、'Bloquer le Contre-Krou Adverse' [阻止对手反库鲁] 等）。提供建设性的反馈和指导技巧，帮助他们提高像冠军一样思考的能力。\n重要提示：请仅使用以下语言制定您的回复：中文。`
                  };
                  const dynamicPrompt = dynamicPromptMap[currentLanguage] || dynamicPromptMap.en;
-                 const dataToCopy = { prompt: dynamicPrompt, language_preference: currentLanguage, games: [...gameRecords] };
+                 const dataToCopy = {
+                     prompt: dynamicPrompt,
+                     language_preference: currentLanguage,
+                     games: [...gameRecords]
+                 };
                  const historyJson = JSON.stringify(dataToCopy, null, 2);
-                 navigator.clipboard.writeText(historyJson).then(() => { alert(t.copySuccess); }).catch(err => { console.error('Clipboard write error:', err); alert(t.copyError); });
-             } catch (e) { console.error("Error preparing history for copying:", e); alert(t.copyPrepareError); }
+                 navigator.clipboard.writeText(historyJson).then(() => {
+                     alert(t.copySuccess);
+                 }).catch(err => {
+                     console.error('Clipboard write error:', err);
+                     alert(t.copyError);
+                 });
+             } catch (e) {
+                 console.error("Error preparing history for copying:", e);
+                 alert(t.copyPrepareError);
+             }
         }
         function resetHistory() {
              const t = translations[currentLanguage] || translations.en;
              if (confirm(t.confirmResetHistory)) {
-                 gameRecords = []; localStorage.removeItem('awaleGameRecords');
-                 const historyContent = document.getElementById('history-content'); if (historyContent) historyContent.textContent = t.noHistory;
-                 closeModal('history-modal'); alert(t.historyResetSuccess);
+                 gameRecords = [];
+                 localStorage.removeItem('awaleGameRecords');
+                 const historyContent = document.getElementById('history-content');
+                 if (historyContent) historyContent.textContent = t.noHistory;
+                 closeModal('history-modal');
+                 alert(t.historyResetSuccess);
              }
         }
         function rainConfetti() {
@@ -1727,7 +1835,8 @@
             for (let i = 0; i < 150; i++) {
                  let c=document.createElement('div'); c.className='confetti';
                  const s=Math.random()*8+4; c.style.width=s+'px'; c.style.height=s+'px';
-                 c.style.left=Math.random()*100+'vw'; c.style.top='-10px';
+                 c.style.left=Math.random()*100+'vw';
+                 c.style.top='-10px';
                  c.style.backgroundColor=`hsl(${Math.random()*360},100%,70%)`;
                  c.style.animationDuration=(Math.random()*3+2)+'s';
                  c.style.animationDelay=Math.random()*1+'s';
@@ -1737,74 +1846,110 @@
             }
         }
 
-        // --- Fonctions Secrets et Listeners ---
+        // --- Fonctions Secrets et Listeners (Identiques à la version précédente) ---
         function addTripleClickListener(element, callback) {
              let c = 0, l = 0;
              element?.addEventListener('click', (e) => {
-                 const t = Date.now(); if (t - l < 500) c++; else c = 1; l = t;
+                 const t = Date.now();
+                 if (t - l < 500) c++; else c = 1;
+                 l = t;
                  if (c === 3) { callback(element); c = 0; }
              });
          }
         function handleTripleClick(element) {
             const t = translations[currentLanguage] || translations.en;
             if (!element) return;
-            if (element.classList.contains('logo')) { restartGame(); showTemporaryMessage(t.resetMessage); }
-            else if (element.id === 'bet-pot-info') { isSuccessGuaranteed = !isSuccessGuaranteed; showTemporaryMessage(isSuccessGuaranteed ? t.successOnMessage : t.successOffMessage); }
-            else if (element.id === 'bet-label') {
+            if (element.classList.contains('logo')) {
+                restartGame();
+                showTemporaryMessage(t.resetMessage);
+            } else if (element.id === 'bet-pot-info') {
+                 isSuccessGuaranteed = !isSuccessGuaranteed;
+                 showTemporaryMessage(isSuccessGuaranteed ? t.successOnMessage : t.successOffMessage);
+             } else if (element.id === 'bet-label') {
                  const select = document.getElementById('bet-amount');
                  if(select){
                      isBetLocked = !isBetLocked;
-                     if (isBetLocked) { lockedBetPercentage = select.value; showTemporaryMessage(t.betLockedMessage(lockedBetPercentage)); select.disabled = true; }
-                     else { lockedBetPercentage = null; showTemporaryMessage(t.betUnlockedMessage); select.disabled = false; select.value = "75"; }
+                     if (isBetLocked) {
+                         lockedBetPercentage = select.value;
+                         showTemporaryMessage(t.betLockedMessage(lockedBetPercentage));
+                         select.disabled = true;
+                     } else {
+                         lockedBetPercentage = null;
+                         showTemporaryMessage(t.betUnlockedMessage);
+                         select.disabled = false;
+                         select.value = "75";
+                     }
                  }
              }
          }
         function addLongPressListener(element, duration, callback) {
              let p = null;
-             const s = (e) => { if (e.button === 2) return; clearTimeout(p); p = setTimeout(() => { if(callback) callback(); p = null; }, duration); };
+             const s = (e) => {
+                 if (e.button === 2) return;
+                 clearTimeout(p);
+                 p = setTimeout(() => { if(callback) callback(); p = null; }, duration);
+             };
              const c = () => { clearTimeout(p); p = null; };
              const o = { passive: true };
-             element?.addEventListener('touchstart', s, o); element?.addEventListener('touchend', c);
-             element?.addEventListener('touchcancel', c); element?.addEventListener('mousedown', s);
-             element?.addEventListener('mouseup', c); element?.addEventListener('mouseleave', c);
+             element?.addEventListener('touchstart', s, o);
+             element?.addEventListener('touchend', c);
+             element?.addEventListener('touchcancel', c);
+             element?.addEventListener('mousedown', s);
+             element?.addEventListener('mouseup', c);
+             element?.addEventListener('mouseleave', c);
          }
         function activatePremium() {
              if (!isPremium) {
-                 isPremium = true; localStorage.setItem('isPremiumVersion', 'true');
+                 isPremium = true;
+                 localStorage.setItem('isPremiumVersion', 'true');
                  const t = translations[currentLanguage] || translations.en;
-                 showTemporaryMessage(t.premiumUnlockedMessage); updateLanguage();
+                 showTemporaryMessage(t.premiumUnlockedMessage);
+                 updateLanguage();
              }
          }
         function handleLongPressSecret(index) {
             const t = translations[currentLanguage] || translations.en;
             const secretMsgEl = document.getElementById('secret-message');
-            if (index === 5) { if(secretMsgEl) secretMsgEl.textContent = t.secretMessage; }
-            else if (index === 0) {
+            if (index === 5) {
+                if(secretMsgEl) secretMsgEl.textContent = t.secretMessage;
+            } else if (index === 0) {
                  if (!isPremium) { showPremiumInfoModal(); return; }
                  if (currentMoveIndex >= 0 && moveHistory.length > 1) {
                       const moveBeingUndone = playedMoves.length > 0 ? playedMoves[playedMoves.length - 1] : null;
                       const wasPlayerBet = moveBeingUndone ? /[A-F]/.test(moveBeingUndone) : false;
-                      moveHistory.pop(); const previousState = moveHistory[moveHistory.length - 1];
-                      board = JSON.parse(JSON.stringify(previousState.board)); scores = JSON.parse(JSON.stringify(previousState.scores));
-                      currentMoveIndex--; if (playedMoves.length > 0) playedMoves.pop();
+                      moveHistory.pop();
+                      const previousState = moveHistory[moveHistory.length - 1];
+                      board = JSON.parse(JSON.stringify(previousState.board));
+                      scores = JSON.parse(JSON.stringify(previousState.scores));
+                      currentMoveIndex--;
+                      if (playedMoves.length > 0) playedMoves.pop();
                       if (wasPlayerBet) {
                           totalPlayer1Bets = Math.max(0, totalPlayer1Bets - 1);
                           const errorIndex = errorLog.findIndex(err => err.moveIndex === currentMoveIndex + 1);
-                          if (errorIndex === -1) { successfulBets = Math.max(0, successfulBets - 1); console.warn("Pot reversal on successful undo might be inaccurate."); }
-                          else {
+                          if (errorIndex === -1) {
+                              successfulBets = Math.max(0, successfulBets - 1);
+                              console.warn("Pot reversal on successful undo might be inaccurate.");
+                          } else {
                              const undoneError = errorLog[errorIndex];
-                             if (undoneError && typeof undoneError.betAmount === 'number') { pot = Math.round(pot + undoneError.betAmount); }
-                             else { console.warn("Could not find bet amount to restore pot on error undo."); }
+                             if (undoneError && typeof undoneError.betAmount === 'number') {
+                                 pot = Math.round(pot + undoneError.betAmount);
+                             } else {
+                                 console.warn("Could not find bet amount to restore pot on error undo.");
+                             }
                              errorLog.splice(errorIndex, 1);
                           }
                       }
-                      lastIncorrectGuess = null; lastCorrectMove = null;
-                      showTemporaryMessage(t.backMessage); renderBoard();
+                      lastIncorrectGuess = null;
+                      lastCorrectMove = null;
+                      showTemporaryMessage(t.backMessage);
+                      renderBoard();
                  }
              }
          }
         function addLongPressListenerForSecrets(element, index) {
-             if (index === 5 || index === 0) { addLongPressListener(element, 2000, () => handleLongPressSecret(index)); }
+             if (index === 5 || index === 0) {
+                 addLongPressListener(element, 2000, () => handleLongPressSecret(index));
+             }
          }
         function showSecretTips() {
             if (!isPremium) { showPremiumInfoModal(); return; }
@@ -1822,17 +1967,32 @@
         }
         function setupCombinedSecretListener() {
              const boardElement = document.getElementById('board'); if (!boardElement) return;
-             let fPressed = false; let aPressed = false; let pressTimer = null; let targetF = null; let targetA = null;
+             let fPressed = false; let aPressed = false;
+             let pressTimer = null;
+             let targetF = null; let targetA = null;
              const clearTimer = () => { if (pressTimer) clearTimeout(pressTimer); pressTimer = null; };
              const handlePress = (event, isStartingPress) => {
                  if (!isPremium) return;
-                 const holeElement = event.target.closest('.hole.player2-hole'); if (!holeElement) return;
+                 const holeElement = event.target.closest('.hole.player2-hole');
+                 if (!holeElement) return;
                  const holeCode = holeElement.dataset.code;
-                 if (holeCode === 'f') { fPressed = isStartingPress; targetF = isStartingPress ? holeElement : null; }
-                 else if (holeCode === 'a') { aPressed = isStartingPress; targetA = isStartingPress ? holeElement : null; }
-                 else { return; }
-                 if (fPressed && aPressed) { clearTimer(); pressTimer = setTimeout(() => { if(fPressed && aPressed) showSecretTips(); }, 3000); }
-                 else { clearTimer(); }
+                 if (holeCode === 'f') {
+                     fPressed = isStartingPress;
+                     targetF = isStartingPress ? holeElement : null;
+                 } else if (holeCode === 'a') {
+                     aPressed = isStartingPress;
+                     targetA = isStartingPress ? holeElement : null;
+                 } else {
+                     return;
+                 }
+                 if (fPressed && aPressed) {
+                     clearTimer();
+                     pressTimer = setTimeout(() => {
+                         if(fPressed && aPressed) showSecretTips();
+                     }, 3000);
+                 } else {
+                     clearTimer();
+                 }
              };
              boardElement.addEventListener('touchstart', (e) => handlePress(e, true), {passive: true});
              boardElement.addEventListener('touchend', (e) => handlePress(e, false));
@@ -1850,9 +2010,10 @@
             console.log("DOM Loaded. Initializing Application...");
             isPremium = localStorage.getItem('isPremiumVersion') === 'true';
             console.log("Premium Status:", isPremium);
-
-            // Setup UI Listeners
-            document.getElementById('theme-toggle')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); renderBoard(); });
+            document.getElementById('theme-toggle')?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                renderBoard();
+            });
             document.getElementById('help-btn')?.addEventListener('click', () => {
                  const t = translations[currentLanguage] || translations.en;
                  const helpTextElement = document.getElementById("help-text");
@@ -1877,18 +2038,15 @@
             if(langSelect) langSelect.addEventListener('change', updateLanguage);
             const levelSelect = document.getElementById("level-select");
             if(levelSelect) levelSelect.addEventListener('change', changeLevel);
-
-            // Load saved data & Initialize state
             loadGameRecords();
-            board = initialBoard(); scores = initialScores(); currentGameIndex = 0;
+            board = initialBoard();
+            scores = initialScores();
+            currentGameIndex = 0;
             currentGame = games[currentGameIndex] ? games[currentGameIndex].split('') : [];
             moveHistory = [{ board: JSON.parse(JSON.stringify(board)), scores: JSON.parse(JSON.stringify(scores)), moveCode: null }];
             console.log("Initial board state set.");
-
-            // Set initial language and render everything
             currentLanguage = langSelect ? (langSelect.value || "fr") : "fr";
-            updateLanguage(); // This populates dropdowns, sets initial text, and renders board
-
+            updateLanguage();
             console.log("Initialization complete. Current Language:", currentLanguage);
         });
     </script>
