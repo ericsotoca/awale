@@ -2057,6 +2057,72 @@
             updateLanguage();
             console.log("Initialization complete. Current Language:", currentLanguage);
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Votre code d'initialisation existant
+            console.log("Initialization complete. Current Language:", currentLanguage);
+            
+            // Fonction pour détecter iOS
+            function isIOS() {
+                return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            }
+            
+            // Fonction pour vérifier si l'application est déjà installée (en mode standalone)
+            function isInStandaloneMode() {
+                return ('standalone' in window.navigator) && (window.navigator.standalone);
+            }
+            
+            // Fonction pour afficher la bannière d'installation
+            function showInstallBanner() {
+                // Seulement pour iOS et si l'app n'est pas déjà installée
+                if (isIOS() && !isInStandaloneMode()) {
+                    // Créer la bannière si elle n'existe pas déjà
+                    if (!document.getElementById('ios-install-banner')) {
+                        const banner = document.createElement('div');
+                        banner.id = 'ios-install-banner';
+                        banner.style.cssText = `
+                            position: fixed;
+                            bottom: 0;
+                            left: 0;
+                            right: 0;
+                            padding: 15px;
+                            background-color: #f8f9fa;
+                            border-top: 1px solid #dee2e6;
+                            text-align: center;
+                            z-index: 9999;
+                            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                        `;
+                        
+                        banner.innerHTML = `
+                            <p style="margin: 0 0 10px 0;"><strong>Installez cette application sur votre iPhone</strong></p>
+                            <p style="margin: 0 0 10px 0;">1. Appuyez sur <svg style="width: 20px; height: 20px; vertical-align: middle;" viewBox="0 0 24 24"><path fill="currentColor" d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" /></svg> puis sur "Sur l'écran d'accueil"</p>
+                            <p style="margin: 0;">2. L'application sera alors disponible comme une app native !</p>
+                            <button id="close-banner" style="margin-top: 10px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Fermer</button>
+                        `;
+                        
+                        document.body.appendChild(banner);
+                        
+                        // Ajouter un événement pour fermer la bannière
+                        document.getElementById('close-banner').addEventListener('click', function() {
+                            document.getElementById('ios-install-banner').style.display = 'none';
+                            
+                            // Stocker l'info que l'utilisateur a fermé la bannière
+                            localStorage.setItem('iosBannerClosed', 'true');
+                        });
+                    }
+                }
+            }
+            
+            // Vérifier si la bannière a déjà été fermée
+            function checkBannerStatus() {
+                return localStorage.getItem('iosBannerClosed') === 'true';
+            }
+            
+            // Afficher la bannière après un délai
+            if (!checkBannerStatus()) {
+                setTimeout(showInstallBanner, 3000); // Afficher après 3 secondes
+            }
+        });
     </script>
 </body>
 </html>
