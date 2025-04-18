@@ -238,7 +238,8 @@
             <textarea id="comment-input" placeholder=""></textarea>
              <div class="checkbox-section">
                  <!-- Les "value" sont utilisés comme clés pour la traduction -->
-                 <label><input type="checkbox" name="comment-option" value="NoSeedsBC"> <span class="checkbox-label-text">Aucune graines en case B et C</span></label>
+                 <label><input type="checkbox" name="comment-option" value="CaseToStudy"> <span class="checkbox-label-text">Cas à étudier</span></label>
+				 <label><input type="checkbox" name="comment-option" value="NoSeedsBC"> <span class="checkbox-label-text">Aucune graines en case B et C</span></label>
                  <label><input type="checkbox" name="comment-option" value="OffensiveOverDefensive"> <span class="checkbox-label-text">Etre Offensif (capture) > Défensif (échappé)</span></label>
                  <label><input type="checkbox" name="comment-option" value="BuildKrouOffensive"> <span class="checkbox-label-text">Construire Krou Offensif (D/E/F) > Défensif</span></label>
                  <label><input type="checkbox" name="comment-option" value="BuildKrouDefensive"> <span class="checkbox-label-text">Construire Krou Défensif (C/D/E) > Offensif</span></label>
@@ -248,7 +249,7 @@
                  <label><input type="checkbox" name="comment-option" value="MultiCaptureMax5"> <span class="checkbox-label-text">Capture multiple max (5 cases)</span></label>
                  <label><input type="checkbox" name="comment-option" value="SpeedUpGame"> <span class="checkbox-label-text">Accélérer le jeu</span></label>
                  <label><input type="checkbox" name="comment-option" value="SlowDownGame"> <span class="checkbox-label-text">Ralentir le jeu</span></label>
-                 <label><input type="checkbox" name="comment-option" value="TechnicalSelectionError"> <span class="checkbox-label-text">Erreur technique de sélection de case</span></label>
+                 
             </div>
         </div>
         <div style="text-align: center; margin-top: 20px;">
@@ -405,7 +406,7 @@
                  commentOptMultiCaptureMax5: "Capture multiple max (5 cases)",
                  commentOptSpeedUpGame: "Accélérer le jeu",
                  commentOptSlowDownGame: "Ralentir le jeu",
-                 commentOptTechnicalSelectionError: "Erreur technique de sélection de case",
+                 commentOptCaseToStudy: "Cas à étudier",
                  // END: Added translations for new comment options (fr)
                  historyTitle: "Historique des Parties",
                  historyRecordTitle: (name, date) => `Partie: ${name} (${date})`,
@@ -507,7 +508,7 @@
                  commentOptMultiCaptureMax5: "Max multiple capture (5 holes)",
                  commentOptSpeedUpGame: "Speed up the game",
                  commentOptSlowDownGame: "Slow down the game",
-                 commentOptTechnicalSelectionError: "Technical error selecting hole",
+                 commentOptCaseToStudy: "Case to study",
                  // END: Added translations for new comment options (en)
                  historyTitle: "Game History",
                  historyRecordTitle: (name, date) => `Game: ${name} (${date})`,
@@ -609,7 +610,7 @@
                  commentOptMultiCaptureMax5: "Captura múltiple máx. (5 casillas)",
                  commentOptSpeedUpGame: "Acelerar el juego",
                  commentOptSlowDownGame: "Ralentizar el juego",
-                 commentOptTechnicalSelectionError: "Error técnico de selección de casilla",
+                 commentOptCaseToStudy: "Caso a estudiar",
                  // END: Added translations for new comment options (es)
                  historyTitle: "Historial de Partidas",
                  historyRecordTitle: (name, date) => `Partida: ${name} (${date})`,
@@ -711,7 +712,7 @@
                  commentOptMultiCaptureMax5: "Макс. множественный захват (5 лунок)",
                  commentOptSpeedUpGame: "Ускорить игру",
                  commentOptSlowDownGame: "Замедлить игру",
-                 commentOptTechnicalSelectionError: "Техническая ошибка выбора лунки",
+                 commentOptCaseToStudy: "Случай для изучения",
                  // END: Added translations for new comment options (ru)
                  historyTitle: "История Игр",
                  historyRecordTitle: (name, date) => `Игра: ${name} (${date})`,
@@ -813,7 +814,7 @@
                  commentOptMultiCaptureMax5: "最大多重吃子（5 个洞）",
                  commentOptSpeedUpGame: "加快游戏",
                  commentOptSlowDownGame: "减慢游戏",
-                 commentOptTechnicalSelectionError: "选择洞的技术错误",
+                 commentOptCaseToStudy: "待研究案例",
                  // END: Added translations for new comment options (zh)
                  historyTitle: "棋局历史",
                  historyRecordTitle: (name, date) => `棋局: ${name} (${date})`,
@@ -983,7 +984,7 @@
                      { value: "MultiCaptureMax5", key: "commentOptMultiCaptureMax5" },
                      { value: "SpeedUpGame", key: "commentOptSpeedUpGame" },
                      { value: "SlowDownGame", key: "commentOptSlowDownGame" },
-                     { value: "TechnicalSelectionError", key: "commentOptTechnicalSelectionError" },
+                     { value: "CaseToStudy", key: "commentOptCaseToStudy" },
                  ];
 
                  commentOptions.forEach(option => {
